@@ -104,12 +104,12 @@
   .today-track{display:inline-block; animation:scroll-left 26s linear infinite;}
   @keyframes scroll-left{from{transform:translateX(0);} to{transform:translateX(-50%);}}
 
-  /* -------- Minimum order banner -------- */
+  /* -------- Minimum order banner -------- 
   .min-order-banner{
     background:var(--wheat); color:var(--crust); text-align:center;
     font-family:'Space Mono'; font-size:12.5px; font-weight:700;
     letter-spacing:0.03em; padding:9px 16px;
-  }
+  }*/
 
   /* -------- Menu -------- */
   .menu-section{padding:56px 0 8px;}
@@ -255,7 +255,7 @@
   </div>
 </div>
 
-<div class="min-order-banner">MINIMUM ORDER: AED <span id="minOrderBannerVal">35</span> — ADD ITEMS TO REACH THE MINIMUM BEFORE CHECKOUT</div>
+ <div class="min-order-banner">MINIMUM ORDER: AED <span id="minOrderBannerVal">35</span> </div>
 
 <main class="wrap" id="menu">
   <!-- Menu sections are generated automatically from MENU_SECTIONS + PRODUCTS in the script below. -->
@@ -421,24 +421,24 @@
 
   const MENU_SECTIONS = [
     {id:'grid-pandesal',  title:'Hot Pandesal',  tag:'Warm and Moist'},
-    {id:'grid-flatbread', title:'Savory Bread',  tag:'Pandesal with Corned Beef'},
-    {id:'grid-loaves',    title:'Sweet Bread',   tag:'For the week ahead'},
-    {id:'grid-buns',      title:'Buns & Rolls',  tag:'Baked in trays'},
+    {id:'grid-SavPandesal', title:'Savory Pandesal',  tag:'Pandesal with Corned Beef'},
+    {id:'grid-SweetBread',    title:'Sweet Bread',   tag:'For the week ahead'},
+    /*{id:'grid-buns',      title:'Buns & Rolls',  tag:'Baked in trays'},*/
   ];
 
   const products = [
-    {id:'p1', section:'grid-pandesal', name:'Pandesal', desc:'Home Made, Freshly Baked.', price:10, type:'boule'},
-    {id:'p2', section:'grid-pandesal', name:'Pandesal with Whiz', desc:"Pandesal with Cheese filling that reminds you of Home.", price:5, type:'boule'},
-    {id:'p3', section:'grid-pandesal', name:'Pandesal with Corned Beef', desc:'Pandesal with corned beef filling', price:14, type:'baguette'},
-    {id:'p4', section:'grid-pandesal', name:'XXX', desc:'XXXX', price:10, type:'flat'},
-    {id:'p5', section:'grid-flatbread', name:'XXX', desc:'XXXX', price:9, type:'flat'},
-    {id:'p6', section:'grid-flatbread', name:'XXX', desc:'XXXX', price:13, type:'flat'},
-    {id:'p7', section:'grid-loaves', name:'XXX', desc:'XXXX', price:18, type:'baguette'},
-    {id:'p8', section:'grid-loaves', name:'XXX', desc:'XXXX', price:20, type:'baguette'},
-    {id:'p9', section:'grid-loaves', name:'XXX', desc:'XXXX', price:15, type:'baguette'},
-    {id:'p10', section:'grid-buns', name:'XXX', desc:'XXXX', price:16, type:'bun'},
-    {id:'p11', section:'grid-buns', name:'XXX', desc:'XXXX', price:17, type:'bun'},
-    {id:'p12', section:'grid-buns', name:'XXX', desc:'XXXX', price:22, type:'bun'},
+    {id:'p1', section:'grid-pandesal', name:'Pandesal', desc:'Home Made, Freshly Baked.', price:10, type:'bun', image: 'pandesal.jpg'},
+    {id:'p2', section:'grid-pandesal', name:'Pandesal with Whiz', desc:"Pandesal with Cheese filling that reminds you of Home.", price:5, type:'bun'},
+    {id:'p3', section:'grid-pandesal', name:'Pandesal with Corned Beef', desc:'Pandesal with corned beef filling', price:14, type:'bun'},
+    {id:'p4', section:'grid-SavPandesal', name:'XXX', desc:'XXXX', price:10, type:'bun'},
+    {id:'p5', section:'grid-SavPandesal', name:'XXX', desc:'XXXX', price:9, type:'bun'},
+    {id:'p6', section:'grid-SavPandesal', name:'XXX', desc:'XXXX', price:13, type:'bun'},
+    {id:'p7', section:'grid-SavPandesal', name:'XXX', desc:'XXXX', price:18, type:'bun'},
+    {id:'p8', section:'grid-SavPandesal', name:'XXX', desc:'XXXX', price:20, type:'bun'},
+    {id:'p9', section:'grid-SavPandesal', name:'XXX', desc:'XXXX', price:15, type:'bun'},
+    {id:'p10', section:'grid-SweetBread', name:'XXX', desc:'XXXX', price:16, type:'bun'},
+    {id:'p11', section:'grid-SweetBread', name:'XXX', desc:'XXXX', price:17, type:'bun'},
+    {id:'p12', section:'grid-SweetBread', name:'XXX', desc:'XXXX', price:22, type:'bun'},
   ];
 
   // ---------- Build the menu sections from MENU_SECTIONS ----------

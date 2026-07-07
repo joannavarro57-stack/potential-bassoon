@@ -93,7 +93,7 @@
     background:var(--crust); color:var(--flour);
     padding:10px 0; overflow:hidden; white-space:nowrap;
   }
-  .today span{
+  .today span{		
     font-family:'Space Mono'; font-size:12.5px; letter-spacing:0.03em;
     display:inline-block; padding-right:48px;
   }
@@ -215,7 +215,7 @@
   <div class="wrap">
     <div class="eyebrow">Dubai · Baked before sunrise</div>
     <h1>Bread, the way<br><em>mornings</em> intended.</h1>
-    <p>Small daily batches of sourdough, flatbread and everyday loaves — ordered here, ready when you need them.</p>
+    <p>Small daily batches of pandesal and softbreads — ordered here, ready when you need them.</p>
     <div class="hero-cta">
       <a href="#menu" class="btn btn-primary">See today's menu</a>
       <a href="#about" class="btn btn-ghost">Our story</a>
@@ -228,15 +228,15 @@
 
 <div class="today">
   <div class="today-track">
-    <span>◦ TODAY'S BAKE — Rosemary Sourdough Boule</span>
-    <span>◦ Za'atar Manakish, hot from the stone</span>
-    <span>◦ Whole Wheat Sandwich Loaf</span>
-    <span>◦ Milk Bun 6-pack</span>
+    <span>◦ TODAY'S BAKE — Pandesal</span>
+    <span>◦ Pandesal with Corned ala SB</span>
+    <span>◦ Pandesal with Whiz</span>
+    <span>◦ Pandesal with Chicken Skinless Longaniza</span>
     <span>◦ Order by 6PM for next-morning pickup</span>
-    <span>◦ TODAY'S BAKE — Rosemary Sourdough Boule</span>
-    <span>◦ Za'atar Manakish, hot from the stone</span>
-    <span>◦ Whole Wheat Sandwich Loaf</span>
-    <span>◦ Milk Bun 6-pack</span>
+    <span>◦ TODAY'S BAKE — Pandesal</span>
+    <span>◦ Pandesal with Corned ala SB</span>
+    <span>◦ Pandesal with Whiz</span>
+    <span>◦ Pandesal with Chicken Skinless Longaniza</span>
     <span>◦ Order by 6PM for next-morning pickup</span>
   </div>
 </div>
@@ -245,7 +245,7 @@
 
   <section class="menu-section">
     <div class="section-head">
-      <h2>Sourdough &amp; Levain</h2>
+      <h2>Pandesal</h2>
       <span class="tag">Naturally leavened</span>
     </div>
     <div class="grid" id="grid-sourdough"></div>
@@ -253,15 +253,15 @@
 
   <section class="menu-section">
     <div class="section-head">
-      <h2>Flatbreads</h2>
-      <span class="tag">Stone-baked</span>
+      <h2>Savory Bread</h2>
+      <span class="tag">Pandesal with Corned Beef</span>
     </div>
     <div class="grid" id="grid-flatbread"></div>
   </section>
 
   <section class="menu-section">
     <div class="section-head">
-      <h2>Everyday Loaves</h2>
+      <h2>Sweet Bread</h2>
       <span class="tag">For the week ahead</span>
     </div>
     <div class="grid" id="grid-loaves"></div>
@@ -371,13 +371,13 @@
         </svg>
         <p>Thanks — your order has been received.</p>
         <div class="order-no mono" id="orderNoDisplay">#SB-0000</div>
-        <p>We'll confirm your <span id="fulfilWord">pickup</span> time by phone or WhatsApp shortly.<br>Payment is collected on delivery/pickup.</p>
+        <p>We're opening WhatsApp now to confirm your <span id="fulfilWord">pickup</span> time.<br>Payment is collected on delivery/pickup.</p>
       </div>
     </div>
     <div class="drawer-foot">
       <a class="full-btn wa-btn" id="whatsappBtn" href="#" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.4-.1-.6.1s-.7.9-.9 1-.3.2-.6.1a7.7 7.7 0 0 1-2.2-1.4 8.2 8.2 0 0 1-1.5-1.9c-.2-.3 0-.4.1-.6l.4-.5c.1-.1.2-.3.2-.4a.5.5 0 0 0 0-.5c-.1-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-1 2.3c0 1.3 1 2.6 1.1 2.8.1.1 2 3.1 4.8 4.3.7.3 1.2.5 1.6.6a3.8 3.8 0 0 0 1.8.1c.5-.1 1.7-.7 1.9-1.4.2-.6.2-1.2.2-1.3-.1-.1-.2-.2-.5-.3Z"/><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Z"/></svg>
-        Send order on WhatsApp
+        Didn't open? Send on WhatsApp
       </a>
       <button class="full-btn" id="newOrderBtn" style="margin-top:8px; background:transparent; color:var(--crust); border:1px solid var(--crust);">Start a new order</button>
     </div>
@@ -409,18 +409,18 @@
   }
 
   const products = [
-    {id:'p1', section:'grid-sourdough', name:'Classic Sourdough Boule', desc:'24-hour ferment, crackling crust.', price:28, type:'boule'},
-    {id:'p2', section:'grid-sourdough', name:'Rosemary & Sea Salt Boule', desc:"Today's special — stone-milled flour.", price:32, type:'boule'},
-    {id:'p3', section:'grid-sourdough', name:'Sourdough Baguette', desc:'Thin crust, open crumb.', price:14, type:'baguette'},
-    {id:'p4', section:'grid-flatbread', name:"Za'atar Manakish", desc:'Stone-baked, brushed with olive oil.', price:10, type:'flat'},
-    {id:'p5', section:'grid-flatbread', name:'Khubz Arabi (Pack of 5)', desc:'Soft everyday flatbread.', price:9, type:'flat'},
-    {id:'p6', section:'grid-flatbread', name:'Cheese Manakish', desc:'Akkawi cheese, baked to order.', price:13, type:'flat'},
-    {id:'p7', section:'grid-loaves', name:'Whole Wheat Sandwich Loaf', desc:'Soft crumb, sliced on request.', price:18, type:'baguette'},
-    {id:'p8', section:'grid-loaves', name:'Seeded Multigrain Loaf', desc:'Sunflower, flax and oats.', price:20, type:'baguette'},
-    {id:'p9', section:'grid-loaves', name:'Classic White Sandwich Loaf', desc:'Everyday soft loaf.', price:15, type:'baguette'},
-    {id:'p10', section:'grid-buns', name:'Milk Buns (6-pack)', desc:'Pillowy, lightly sweet.', price:16, type:'bun'},
-    {id:'p11', section:'grid-buns', name:'Dinner Rolls (8-pack)', desc:'Butter-brushed, oven-warm.', price:17, type:'bun'},
-    {id:'p12', section:'grid-buns', name:'Cinnamon Rolls (4-pack)', desc:'Rolled with brown sugar & spice.', price:22, type:'bun'},
+    {id:'p1', section:'grid-sourdough', name:'Pandesal', desc:'Home Made, Freshly Baked.', price:10, type:'boule'},
+    {id:'p2', section:'grid-sourdough', name:'Pandesal with Whiz', desc:"Pandesal with Cheese filling that reminds you of Home.", price:5, type:'boule'},
+    {id:'p3', section:'grid-sourdough', name:'Pandesal with Corned Beef', desc:'Pandesal with corned beef filling', price:14, type:'baguette'},
+    {id:'p4', section:'grid-flatbread', name:'XXX', desc:'XXXX', price:10, type:'flat'},
+    {id:'p5', section:'grid-flatbread', name:'XXX', desc:'XXXX', price:9, type:'flat'},
+    {id:'p6', section:'grid-flatbread', name:'XXX', desc:'XXXX', price:13, type:'flat'},
+    {id:'p7', section:'grid-loaves', name:'XXX', desc:'XXXX', price:18, type:'baguette'},
+    {id:'p8', section:'grid-loaves', name:'XXX', desc:'XXXX', price:20, type:'baguette'},
+    {id:'p9', section:'grid-loaves', name:'XXX', desc:'XXXX', price:15, type:'baguette'},
+    {id:'p10', section:'grid-buns', name:'XXX', desc:'XXXX', price:16, type:'bun'},
+    {id:'p11', section:'grid-buns', name:'XXX', desc:'XXXX', price:17, type:'bun'},
+    {id:'p12', section:'grid-buns', name:'XXX', desc:'XXXX', price:22, type:'bun'},
   ];
 
   const sections = {};
@@ -580,6 +580,11 @@
     document.getElementById('whatsappBtn').href = waLink;
 
     showView('view-confirm');
+
+    // Auto-open WhatsApp right away — this fires inside the same click event as
+    // the "Confirm order" button, so browsers treat it as a direct user action
+    // and won't block it as a popup. The button above still works as a fallback.
+    window.open(waLink, '_blank', 'noopener');
   });
 
   document.getElementById('newOrderBtn').addEventListener('click', ()=>{

@@ -6,16 +6,16 @@
 <title>Always Bready — Baked Fresh Ready</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&family=Playball&family=Lobster&display=swap" rel="stylesheet">
 <style>
   :root{
-    --flour:#EDE3D0;
-    --crumb:#FAF5E9;
-    --crust:#3E2417;
-    --crust-mid:#6B3F22;
-    --wheat:#C79A3E;
-    --ember:#B8471F;
-    --line: rgba(62,36,23,0.14);
+    --flour:#FBF3E6;
+    --crumb:#FFFCF5;
+    --crust:#3A2314;
+    --crust-mid:#6B4226;
+    --wheat:#C9A227;
+    --ember:#C15C39;
+    --line: rgba(58,35,20,0.14);
     --radius: 3px;
   }
   *{box-sizing:border-box;}
@@ -43,9 +43,13 @@
     border-bottom:1px solid var(--line);
   }
   .nav{display:flex; align-items:center; justify-content:space-between; padding:16px 24px;}
-  .brand{display:flex; align-items:baseline; gap:8px;}
-  .brand-mark{font-family:'Lobster', serif; font-style:italic; font-weight:600; font-size:22px;}
-  .brand-sub{font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--crust-mid);}
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-logo{width:42px; height:42px; border-radius:50%; object-fit:cover; display:block;}
+  .brand-text{display:flex; flex-direction:column; line-height:1;}
+  .brand-mark{display:flex; align-items:baseline; gap:4px;}
+  .brand-always{font-family:'Playball', cursive; font-size:22px; color:var(--crust);}
+  .brand-bready{font-family:'Lobster', cursive; font-size:24px; color:var(--ember);}
+  .brand-sub{font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--crust-mid); margin-top:2px;}
   .nav-links{display:flex; align-items:center; gap:28px; font-size:14px;}
   .nav-links a{text-decoration:none; color:var(--crust-mid); transition:color .15s;}
   .nav-links a:hover{color:var(--crust);}
@@ -99,6 +103,13 @@
   }
   .today-track{display:inline-block; animation:scroll-left 26s linear infinite;}
   @keyframes scroll-left{from{transform:translateX(0);} to{transform:translateX(-50%);}}
+
+  /* -------- Minimum order banner -------- */
+  .min-order-banner{
+    background:var(--wheat); color:var(--crust); text-align:center;
+    font-family:'Space Mono'; font-size:12.5px; font-weight:700;
+    letter-spacing:0.03em; padding:9px 16px;
+  }
 
   /* -------- Menu -------- */
   .menu-section{padding:56px 0 8px;}
@@ -198,8 +209,11 @@
 <header>
   <div class="nav wrap">
     <div class="brand">
-      <span class="brand-mark">Always Bready</span>
-      <span class="brand-sub">Bakehouse</span>
+      <img class="brand-logo" src="logo.jpeg" alt="Always Bready logo">
+      <div class="brand-text">
+        <span class="brand-mark"><span class="brand-always">Always</span><span class="brand-bready">Bready</span></span>
+        <span class="brand-sub">Baked Fresh Ready</span>
+      </div>
     </div>
     <nav class="nav-links">
       <a href="#menu">Menu</a>
@@ -241,57 +255,24 @@
   </div>
 </div>
 
+<div class="min-order-banner">MINIMUM ORDER: AED <span id="minOrderBannerVal">35</span> — ADD ITEMS TO REACH THE MINIMUM BEFORE CHECKOUT</div>
+
 <main class="wrap" id="menu">
-
-  <section class="menu-section">
-    <div class="section-head">
-      <h2>Hot Pandesal</h2>
-      <span class="tag">Warm and Moist</span>
-    </div>
-    <div class="grid" id="grid-pandesal"></div>
-  </section>
-
-  <section class="menu-section">
-    <div class="section-head">
-      <h2>Savory Bread</h2>
-      <span class="tag">Pandesal with Corned Beef</span>
-    </div>
-    <div class="grid" id="grid-flatbread"></div>
-  </section>
-
-  <section class="menu-section">
-    <div class="section-head">
-      <h2>Sweet Bread</h2>
-      <span class="tag">For the week ahead</span>
-    </div>
-    <div class="grid" id="grid-loaves"></div>
-  </section>
-
-  <section class="menu-section">
-    <div class="section-head">
-      <h2>Buns &amp; Rolls</h2>
-      <span class="tag">Baked in trays</span>
-    </div>
-    <div class="grid" id="grid-buns"></div>
-  </section>
-
+  <!-- Menu sections are generated automatically from MENU_SECTIONS + PRODUCTS in the script below. -->
 </main>
 
 <section class="about" id="about">
   <div class="wrap about-grid">
     <div>
       <h2>Four ovens.<br>One neighbourhood.</h2>
-      <p>Bread Pitt mixes each night, proofs slow, and bakes just before the city wakes up. No preservatives, no shortcuts — just flour, water, salt and time. Order ahead for pickup, or have it delivered across Dubai.</p>
+      <p>Always Bready mixes each night, proofs slow, and bakes just before the city wakes up. No preservatives, no shortcuts — just flour, water, salt and time. Order ahead for pickup, or have it delivered across Dubai.</p>
     </div>
-    <svg viewBox="0 0 200 120" width="100%" height="auto" aria-hidden="true">
-      <ellipse cx="100" cy="70" rx="70" ry="34" fill="none" stroke="#3E2417" stroke-width="1.4"/>
-      <path d="M45,58 L75,44 M85,66 L120,48 M100,72 L140,56 M60,78 L95,62" stroke="#6B3F22" stroke-width="1.4" fill="none"/>
-    </svg>
+    <img src="logo.jpeg" alt="Always Bready logo" style="width:100%; max-width:300px; margin:0 auto; display:block;">
   </div>
 </section>
 
 <footer>
-  Bread Pitt — DUBAI, UAE — ORDERS CONFIRMED VIA PHONE / WHATSAPP
+  ALWAYS BREADY — DUBAI, UAE — ORDERS CONFIRMED VIA PHONE / WHATSAPP
 </footer>
 
 <!-- Cart Drawer -->
@@ -408,6 +389,43 @@
     return `<svg viewBox="0 0 100 60"><circle cx="50" cy="32" r="26" fill="#EDE3D0" stroke="#3E2417" stroke-width="2"/><path d="${p}" fill="none" stroke="#6B3F22" stroke-width="1.4"/></svg>`;
   }
 
+  /* ============================================================
+     HOW TO EDIT THE MENU
+     (this is the only part of the file you should need to touch)
+     ============================================================
+
+     1) MENU_SECTIONS controls the categories shown on the site,
+        and their order. Add, rename, remove, or reorder freely —
+        the page builds itself from this list. No HTML editing.
+          id    -> unique code, used to link products to a section
+          title -> category heading shown on the site
+          tag   -> small label shown next to the heading
+
+     2) PRODUCTS controls each menu item.
+          id      -> unique code for this item (e.g. 'p13')
+          section -> must match one of the MENU_SECTIONS ids above
+          name    -> item name
+          desc    -> short description
+          price   -> price in AED (number only, no "AED")
+          type    -> fallback icon if no photo is given:
+                     'boule' | 'baguette' | 'flat' | 'bun'
+          image   -> OPTIONAL. To use a real photo instead of the
+                     drawn icon: put the photo file inside the
+                     "images" folder next to this website file,
+                     then write its filename here, e.g.
+                       image: 'pandesal.jpg'
+                     Leave this line out to use the drawn icon.
+                     If the file can't be found, it falls back to
+                     the drawn icon automatically — nothing breaks.
+     ============================================================ */
+
+  const MENU_SECTIONS = [
+    {id:'grid-pandesal',  title:'Hot Pandesal',  tag:'Warm and Moist'},
+    {id:'grid-flatbread', title:'Savory Bread',  tag:'Pandesal with Corned Beef'},
+    {id:'grid-loaves',    title:'Sweet Bread',   tag:'For the week ahead'},
+    {id:'grid-buns',      title:'Buns & Rolls',  tag:'Baked in trays'},
+  ];
+
   const products = [
     {id:'p1', section:'grid-pandesal', name:'Pandesal', desc:'Home Made, Freshly Baked.', price:10, type:'boule'},
     {id:'p2', section:'grid-pandesal', name:'Pandesal with Whiz', desc:"Pandesal with Cheese filling that reminds you of Home.", price:5, type:'boule'},
@@ -423,26 +441,67 @@
     {id:'p12', section:'grid-buns', name:'XXX', desc:'XXXX', price:22, type:'bun'},
   ];
 
+  // ---------- Build the menu sections from MENU_SECTIONS ----------
+  const menuRoot = document.getElementById('menu');
   const sections = {};
+  MENU_SECTIONS.forEach(sec=>{
+    const sectionEl = document.createElement('section');
+    sectionEl.className = 'menu-section';
+    sectionEl.innerHTML = `
+      <div class="section-head">
+        <h2>${sec.title}</h2>
+        <span class="tag">${sec.tag}</span>
+      </div>
+      <div class="grid" id="${sec.id}"></div>`;
+    menuRoot.appendChild(sectionEl);
+    sections[sec.id] = sectionEl.querySelector('.grid');
+  });
+
+  // ---------- Build each product card (photo if provided, else drawn icon) ----------
+  function buildIconEl(p){
+    const wrap = document.createElement('div');
+    wrap.className = 'card-icon';
+    if(p.image){
+      const img = document.createElement('img');
+      img.src = 'images/' + p.image;
+      img.alt = p.name;
+      img.loading = 'lazy';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      img.style.borderRadius = 'var(--radius)';
+      img.onerror = function(){ wrap.innerHTML = icon(p.type); };
+      wrap.appendChild(img);
+    } else {
+      wrap.innerHTML = icon(p.type);
+    }
+    return wrap;
+  }
+
   products.forEach(p=>{
-    if(!sections[p.section]) sections[p.section] = document.getElementById(p.section);
+    const grid = sections[p.section];
+    if(!grid){ return; } // section id typo guard — skip silently rather than crash
     const card = document.createElement('div');
     card.className = 'card';
-    card.innerHTML = `
-      <div class="card-icon">${icon(p.type)}</div>
+    card.appendChild(buildIconEl(p));
+    const rest = document.createElement('div');
+    rest.innerHTML = `
       <h3>${p.name}</h3>
       <p class="desc">${p.desc}</p>
       <div class="card-foot">
         <span class="price mono">AED ${p.price}</span>
         <button class="add-btn" data-id="${p.id}" aria-label="Add ${p.name} to cart">+</button>
       </div>`;
-    sections[p.section].appendChild(card);
+    while(rest.firstChild) card.appendChild(rest.firstChild);
+    grid.appendChild(card);
   });
 
   // ---------- Cart state (in-memory) ----------
   let cart = {}; // id -> qty
   let fulfilMode = 'pickup';
   const BUSINESS_WHATSAPP = '971586321718'; // country code + number, no + or spaces
+  const MIN_ORDER = 35; // AED — minimum order total required before checkout is allowed
+  document.getElementById('minOrderBannerVal').textContent = MIN_ORDER;
 
   document.querySelectorAll('.add-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -488,6 +547,24 @@
     const sub = subtotal();
     document.getElementById('subtotalVal').textContent = 'AED ' + sub;
     document.getElementById('subtotalVal2').textContent = 'AED ' + sub;
+
+    // Enforce minimum order before allowing checkout to proceed
+    const belowMin = totalQty > 0 && sub < MIN_ORDER;
+    document.getElementById('toCheckoutBtn').disabled = totalQty===0 || belowMin;
+    let minMsg = document.getElementById('minOrderMsg');
+    if(!minMsg){
+      minMsg = document.createElement('p');
+      minMsg.id = 'minOrderMsg';
+      minMsg.className = 'mono';
+      minMsg.style.cssText = 'color:var(--ember); font-size:12px; text-align:center; margin:-4px 0 12px;';
+      document.querySelector('#view-cart .drawer-foot').insertBefore(minMsg, document.getElementById('toCheckoutBtn'));
+    }
+    if(belowMin){
+      minMsg.textContent = `Add AED ${MIN_ORDER - sub} more to reach the AED ${MIN_ORDER} minimum`;
+      minMsg.style.display = 'block';
+    } else {
+      minMsg.style.display = 'none';
+    }
 
     body.querySelectorAll('[data-act]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
@@ -545,6 +622,11 @@
 
   // Confirm order
   document.getElementById('confirmOrderBtn').addEventListener('click', ()=>{
+    if(subtotal() < MIN_ORDER){
+      alert(`Minimum order is AED ${MIN_ORDER}. Please add more items before checking out.`);
+      showView('view-cart');
+      return;
+    }
     const name = document.getElementById('custName').value.trim();
     const phone = document.getElementById('custPhone').value.trim();
     if(!name || !phone){
@@ -567,7 +649,7 @@
     const time = document.getElementById('custTime').value.trim();
     const notes = document.getElementById('custNotes').value.trim();
 
-    let message = `New order #${orderNo} — Bread Pitt\n\n${lines}\n\nTotal: AED ${total}\n\nName: ${name}\nPhone: ${phone}\nFulfilment: ${fulfilMode}`;
+    let message = `New order #${orderNo} — Always Bready\n\n${lines}\n\nTotal: AED ${total}\n\nName: ${name}\nPhone: ${phone}\nFulfilment: ${fulfilMode}`;
     if(fulfilMode === 'delivery'){
       message += `\nArea: ${area}`;
       if(address) message += `\nAddress: ${address}`;

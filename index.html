@@ -250,8 +250,8 @@ z-index:5;
 
 <section class="hero">
   <div class="wrap">
-    <div class="eyebrow">Dubai · Baked before sunrise</div>
-    <h1>Bread, the way<br><em>mornings</em> intended.</h1>
+    <div class="eyebrow">Here's to a Little Reminder of Home</div>
+    <h1>Premium Panaderia<br><em>On Your Doorstep</em> Baked Fresh.</h1>
     <p>Small daily batches of pandesal and softbreads — ordered here, ready when you need them.</p>
     <div class="hero-cta">
       <a href="#menu" class="btn btn-primary">See today's menu</a>
@@ -266,15 +266,17 @@ z-index:5;
 <div class="today">
   <div class="today-track">
     <span>◦ TODAY'S BAKE — Pandesal</span>
-    <span>◦ Pandesal with Corned ala SB</span>
-    <span>◦ Pandesal with Whiz</span>
+    <span>◦ Pandesal with Corned Beef</span>
+    <span>◦ Pandesal with Shanghai Filling in Sweet & Sour Sauce</span>
     <span>◦ Pandesal with Chicken Skinless Longaniza</span>
-    <span>◦ Order by 6PM for next-morning pickup</span>
+    <span>◦ Pandesal with Egg and Mayo</span>
+    <span>◦ Pandesal with Cheese</span>
     <span>◦ TODAY'S BAKE — Pandesal</span>
-    <span>◦ Pandesal with Corned ala SB</span>
-    <span>◦ Pandesal with Whiz</span>
+    <span>◦ Pandesal with Corned Beef</span>
+    <span>◦ Pandesal with Shanghai Filling in Sweet & Sour Sauce</span>
     <span>◦ Pandesal with Chicken Skinless Longaniza</span>
-    <span>◦ Order by 6PM for next-morning pickup</span>
+    <span>◦ Pandesal with Egg and Mayo</span>
+    <span>◦ Pandesal with Cheese</span>
   </div>
 </div>
 
@@ -287,8 +289,8 @@ z-index:5;
 <section class="about" id="about">
   <div class="wrap about-grid">
     <div>
-      <h2>Four ovens.<br>One neighbourhood.</h2>
-      <p>Always Bready mixes each night, proofs slow, and bakes just before the city wakes up. No preservatives, no shortcuts — just flour, water, salt and time. Order ahead for pickup, or have it delivered across Dubai.</p>
+      <h2>Simple Tastes<br>Warm neighbourhood.</h2>
+      <p>Always Bready mixes each night, proofs slow, and makes sure you get the softest, freshest bread. No preservatives, no shortcuts, all but freshest ingredients. Order ahead for pickup, or have it delivered across Discovery Gardens, The Gardens, And Al Furjan.</p>
     </div>
     <img src="logo.jpeg" alt="Always Bready logo" style="width:100%; max-width:300px; margin:0 auto; display:block;">
   </div>
@@ -444,21 +446,21 @@ z-index:5;
 
   const MENU_SECTIONS = [
     {id:'grid-pandesal',  title:'Hot Pandesal',  tag:'Warm and Moist'},
-    {id:'grid-SavPandesal', title:'Savory Pandesal',  tag:'Pandesal with Corned Beef'},
-    {id:'grid-SweetBread',    title:'Sweet Bread',   tag:'For the week ahead'},
+    {id:'grid-SavPandesal', title:'Savory Pandesal',  tag:'Fillings to satisfy'},
+    {id:'grid-SweetBread',    title:'Sweet Bread',   tag:'You deserve a treat'},
     /*{id:'grid-buns',      title:'Buns & Rolls',  tag:'Baked in trays'},*/
   ];
 
   const products = [
-    {id:'p1', section:'grid-pandesal', name:'Pandesal', desc:'Home Made, Freshly Baked.', price:10, type:'bun', image: 'pandesal.jpg'},
-    {id:'p2', section:'grid-pandesal', name:'Pandesal with Whiz', desc:"Pandesal with Cheese filling that reminds you of Home.", price:5, type:'bun'},
-    {id:'p3', section:'grid-pandesal', name:'Pandesal with Corned Beef', desc:'Pandesal with corned beef filling', price:14, type:'bun'},
-    {id:'p4', section:'grid-SavPandesal', name:'XXX', desc:'XXXX', price:10, type:'bun'},
-    {id:'p5', section:'grid-SavPandesal', name:'XXX', desc:'XXXX', price:9, type:'bun'},
-    {id:'p6', section:'grid-SavPandesal', name:'XXX', desc:'XXXX', price:13, type:'bun'},
-    {id:'p7', section:'grid-SavPandesal', name:'XXX', desc:'XXXX', price:18, type:'bun'},
-    {id:'p8', section:'grid-SavPandesal', name:'XXX', desc:'XXXX', price:20, type:'bun'},
-    {id:'p9', section:'grid-SavPandesal', name:'XXX', desc:'XXXX', price:15, type:'bun'},
+    {id:'p1', section:'grid-pandesal', name:'Pandesal (5 PCS)', desc:'Home Made, Freshly Baked.', price:10, type:'bun', image: 'pandesal.jpg'},
+    {id:'p2', section:'grid-pandesal', name:'Pandesal with Cheese', desc:"Your Favorite Palaman but made premium.", price:5, type:'bun'},
+    {id:'p3', section:'grid-pandesal', name:'Malunggay Pandesal (3 PCS)', desc:'Premium Pandesal, only healthier', price:10, type:'bun'},
+    {id:'p4', section:'grid-SavPandesal', name:'Pandesal con Corned Beef', desc:'Pandesal filled with your favorite corned beef', price:8, type:'bun'},
+    {id:'p5', section:'grid-SavPandesal', name:'Pandesal con Shanghai Filling', desc:'Chicken Shanghai with Sweet and Sour Sauce ', price:8, type:'bun'},
+    {id:'p6', section:'grid-SavPandesal', name:'Pandesal con Chicken Skinless Longaniza', desc:'Sweet and Garlicky flavors for your cravings ', price:8, type:'bun'},
+    {id:'p7', section:'grid-SavPandesal', name:'Pandesal con Egg & Mayo', desc:'Simple and delicious ', price:7, type:'bun'},
+    {id:'p8', section:'grid-SavPandesal', name:'Pandesal Filled Combo', desc:'All Flavors in 1 Package [Corned Beef,Shanghai, Skinless Longaniza, Egg and Mayo]', price:30, type:'bun'},
+    {id:'p9', section:'grid-SavPandesal', name:'XXX', desc:'XXX ', price:15, type:'bun'},
     {id:'p10', section:'grid-SweetBread', name:'XXX', desc:'XXXX', price:16, type:'bun'},
     {id:'p11', section:'grid-SweetBread', name:'XXX', desc:'XXXX', price:17, type:'bun'},
     {id:'p12', section:'grid-SweetBread', name:'XXX', desc:'XXXX', price:22, type:'bun'},

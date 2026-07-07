@@ -202,7 +202,30 @@
     background:#25D366; color:#0b2b17; text-decoration:none;
   }
   .wa-btn:hover{filter:brightness(0.96);}
+
+.qty-control{display:flex;align-items:center;gap:8px}
+.qty-control button{width:30px;height:30px;border:1px solid var(--crust);border-radius:50%;background:transparent;cursor:pointer}
+.menu-qty{min-width:20px;text-align:center;font-weight:bold}
+
 </style>
+
+<style>
+.drawer{display:flex;flex-direction:column;height:100vh;}
+#view-cart,#view-checkout,#view-confirm{display:flex;flex-direction:column;height:100%;}
+.drawer-body{flex:1;overflow-y:auto;min-height:0;padding-bottom:120px;}
+.drawer-foot{
+position:sticky;
+bottom:0;
+background:var(--crumb);
+border-top:1px solid var(--line);
+z-index:5;
+}
+.full-btn{min-height:50px;}
+@media (max-height:700px){
+.drawer-body{padding-bottom:140px;}
+}
+</style>
+
 </head>
 <body>
 
@@ -490,7 +513,11 @@
       <p class="desc">${p.desc}</p>
       <div class="card-foot">
         <span class="price mono">AED ${p.price}</span>
-        <button class="add-btn" data-id="${p.id}" aria-label="Add ${p.name} to cart">+</button>
+        <div class="qty-control" data-id="${p.id}">
+        <button class="qty-minus" data-id="${p.id}">−</button>
+        <span class="menu-qty mono" id="menuQty-${p.id}">0</span>
+        <button class="qty-plus" data-id="${p.id}">+</button>
+        </div>
       </div>`;
     while(rest.firstChild) card.appendChild(rest.firstChild);
     grid.appendChild(card);
@@ -503,14 +530,15 @@
   const MIN_ORDER = 35; // AED — minimum order total required before checkout is allowed
   document.getElementById('minOrderBannerVal').textContent = MIN_ORDER;
 
-  document.querySelectorAll('.add-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const id = btn.dataset.id;
-      cart[id] = (cart[id]||0) + 1;
-      renderCart();
-      openDrawer('view-cart');
-    });
-  });
+  document.addEventListener('click',e=>{
+ if(e.target.classList.contains('qty-plus')){
+   const id=e.target.dataset.id;cart[id]=(cart[id]||0)+1;renderCart();
+ }
+ if(e.target.classList.contains('qty-minus')){
+   const id=e.target.dataset.id;
+   if(cart[id]){cart[id]--;if(cart[id]<=0) delete cart[id];renderCart();}
+ }
+});
 
   function getProduct(id){ return products.find(p=>p.id===id); }
 
@@ -544,7 +572,8 @@
         </div>`;
       }).join('');
     }
-    const sub = subtotal();
+    products.forEach(p=>{const el=document.getElementById('menuQty-'+p.id);if(el)el.textContent=cart[p.id]||0;});
+const sub = subtotal();
     document.getElementById('subtotalVal').textContent = 'AED ' + sub;
     document.getElementById('subtotalVal2').textContent = 'AED ' + sub;
 

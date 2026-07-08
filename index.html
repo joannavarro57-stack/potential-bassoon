@@ -46,7 +46,7 @@
     border-bottom:1px solid var(--line);
   }
   .nav{display:flex; align-items:center; justify-content:space-between; padding:16px 24px; gap:12px;}
-  .brand{display:flex; align-items:center; gap:10px; min-width:0;}
+  .brand{display:flex; align-items:center; gap:10px; min-width:0; text-decoration:none; cursor:pointer; -webkit-tap-highlight-color:transparent;}
   .brand-logo{width:35px; height:35px; border-radius:50%; object-fit:cover; display:block; flex-shrink:0;}
   .brand-text{display:flex; flex-direction:column; line-height:1; min-width:0;}
   .brand-mark{display:flex; align-items:baseline; gap:4px; flex-wrap:wrap;}
@@ -260,7 +260,14 @@
 
 <style>
 .drawer{display:flex;flex-direction:column;height:100vh;}
-#view-cart,#view-checkout,#view-confirm{display:flex;flex-direction:column;height:100%;}
+#view-cart,#view-checkout,#view-confirm{
+  display:flex;flex-direction:column;height:100%;
+  opacity:0; transform:translateY(6px);
+  transition:opacity .18s ease, transform .18s ease;
+}
+#view-cart.view-active,#view-checkout.view-active,#view-confirm.view-active{
+  opacity:1; transform:translateY(0);
+}
 .drawer-body{flex:1;overflow-y:auto;min-height:0;padding-bottom:120px;}
 .drawer-foot{
 position:sticky;
@@ -280,13 +287,13 @@ z-index:5;
 
 <header>
   <div class="nav wrap">
-    <div class="brand">
+    <a class="brand" id="brandHome" href="#" aria-label="Always Bready — back to home">
       <img class="brand-logo" src="logo.jpeg" alt="Always Bready logo">
       <div class="brand-text">
         <span class="brand-mark"><span class="brand-always">Always</span><span class="brand-bready">Bready</span></span>
         <span class="brand-sub">Baked.Fresh.Ready</span>
       </div>
-    </div>
+    </a>
     <nav class="nav-links">
       <a href="#menu">Menu</a>
       <!-- <a href="#about">About</a> -->
@@ -353,7 +360,7 @@ z-index:5;
 <div class="overlay" id="overlay"></div>
 <aside class="drawer" id="drawer" aria-label="Shopping cart">
 
-  <div id="view-cart">
+  <div id="view-cart" class="view-active">
     <div class="drawer-head">
       <h3>Your order</h3>
       <button class="close-x" id="closeDrawerBtn" aria-label="Close cart">&times;</button>
@@ -672,8 +679,25 @@ const sub = subtotal();
     drawer.classList.remove('open');
   }
   function showView(view){
-    views.forEach(v=> document.getElementById(v).classList.toggle('hidden', v!==view));
+    views.forEach(v=>{
+      const el = document.getElementById(v);
+      if(v===view){
+        el.classList.remove('hidden');
+        // allow the browser to register the starting state before animating in
+        requestAnimationFrame(()=> requestAnimationFrame(()=> el.classList.add('view-active')));
+      } else {
+        el.classList.remove('view-active');
+        el.classList.add('hidden');
+      }
+    });
   }
+
+  // Logo / brand name -> back to home, cart contents left untouched
+  document.getElementById('brandHome').addEventListener('click', (e)=>{
+    e.preventDefault();
+    closeDrawer();
+    window.scrollTo({top:0, left:0, behavior:'smooth'});
+  });
 
   document.getElementById('cartOpenBtn').addEventListener('click', ()=> openDrawer('view-cart'));
   document.getElementById('closeDrawerBtn').addEventListener('click', closeDrawer);

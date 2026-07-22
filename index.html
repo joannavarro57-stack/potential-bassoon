@@ -842,7 +842,13 @@ const sub = subtotal();
     const entries = Object.entries(cart).filter(([,q])=>q>0);
     const lines = entries.map(([id,qty])=>{
       const p = getProduct(id);
-      return `- ${p.name} x${qty} (AED ${p.price*qty})`;
+      let line = `- ${p.name} x${qty} (AED ${p.price*qty})`;
+      // Box orders carry their chosen flavors in p.desc — list them under the line
+      if(id.startsWith('box-') && p.desc){
+        const flavorLines = p.desc.split(', ').map(f => `   - ${f}`).join('\n');
+        line += `\n   Flavors:\n${flavorLines}`;
+      }
+      return line;
     }).join('\n');
     const total = subtotal();
     const area = document.getElementById('custArea').value;

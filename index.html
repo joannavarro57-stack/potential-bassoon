@@ -154,6 +154,7 @@
   .card h3{font-size:18px; font-weight:500;}
   .card p.desc{font-size:13px; color:var(--crust-mid); line-height:1.5; margin:0; min-height:36px;}
   .card-foot{display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:8px; gap:8px; flex-wrap:wrap;}
+  .card-foot .btn{padding:8px 16px; font-size:13px;}
   .price{font-family:'Space Mono'; font-size:15px; font-weight:700;}
   .add-btn{
     background:transparent; border:1px solid var(--crust); color:var(--crust);
@@ -406,8 +407,19 @@ z-index:5;
         <textarea id="custAddress" rows="2" placeholder="Building, apartment, landmark"></textarea>
       </div>
       <div class="field">
-        <label for="custTime">Preferred time</label>
-        <input type="text" id="custTime" placeholder="e.g. Tomorrow, 8–9 AM">
+        <label for="custDate">Preferred date</label>
+        <input type="date" id="custDate">
+      </div>
+      <div class="field">
+        <label for="custTime">Preferred time (after 6 PM)</label>
+        <select id="custTime">
+          <option value="">Select a time slot</option>
+          <option>6:00 PM – 7:00 PM</option>
+          <option>7:00 PM – 8:00 PM</option>
+          <option>8:00 PM – 9:00 PM</option>
+          <option>9:00 PM – 10:00 PM</option>
+          <option>After 10:00 PM</option>
+        </select>
       </div>
       <div class="field">
         <label for="custNotes">Notes (optional)</label>
@@ -417,6 +429,22 @@ z-index:5;
     <div class="drawer-foot">
       <div class="subtotal-row"><span>Total</span><span id="subtotalVal2">AED 0</span></div>
       <button class="full-btn" id="confirmOrderBtn">Confirm order — pay on delivery/pickup</button>
+    </div>
+  </div>
+
+  <div id="view-box" class="hidden">
+    <div class="drawer-head">
+      <h3>Build your box</h3>
+      <button class="close-x" id="closeDrawerBtn4" aria-label="Close cart">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <button class="back-link" id="backFromBoxBtn">&larr; Back to menu</button>
+      <p class="mono" id="boxCounter" style="font-size:13px;color:var(--crust-mid);margin-bottom:12px;">0 / 12 selected — pick 12 more</p>
+      <div id="boxItemsList"></div>
+    </div>
+    <div class="drawer-foot">
+      <div class="subtotal-row"><span>Box price</span><span class="mono">AED 35</span></div>
+      <button class="full-btn" id="addBoxBtn" disabled>Add box to cart</button>
     </div>
   </div>
 
@@ -501,24 +529,70 @@ z-index:5;
      ============================================================ */
 
   const MENU_SECTIONS = [
+    {id:'grid-buildbox', title:'Build Your Own Box', tag:'Mix & match, up to 12 pcs'},
     {id:'grid-pandesal',  title:'Hot Pandesal',  tag:'Warm and Moist'},
     {id:'grid-SavPandesal', title:'Savory Pandesal',  tag:'Fillings to satisfy'},
     {id:'grid-SweetBread',    title:'Sweet Bread',   tag:'You deserve a treat'},
     /*{id:'grid-buns',      title:'Buns & Rolls',  tag:'Baked in trays'},*/
   ];
 
+  /* ============================================================
+     HOW TO EDIT "BUILD YOUR OWN BOX"
+     (this is the only part of the file you should need to touch
+      to manage box flavors — no HTML/CSS editing required)
+     ============================================================
+
+     BOX_PRICE -> flat price in AED for one box (currently AED 35)
+     BOX_MIN   -> minimum pieces required to fill a box
+     BOX_MAX   -> maximum pieces allowed in a box
+     (BOX_MIN and BOX_MAX are both 12 — customers must pick
+      exactly 12 pieces before they can add a box to cart)
+
+     BOX_ITEMS -> the list of flavors customers can choose from.
+       id   -> unique code for this flavor (e.g. 'b6') — never
+               reuse an id, even for a flavor you bring back later
+       name -> flavor name shown to the customer
+
+     TO TEMPORARILY HIDE A FLAVOR (e.g. sold out today):
+       Put "//" in front of its line. It disappears from the
+       box builder immediately and comes back the moment you
+       remove the "//". Example:
+         // {id:'b3', name:'Pandesal con Shanghai Filling'},
+
+     TO PERMANENTLY REMOVE A FLAVOR:
+       Delete its line entirely.
+
+     TO ADD A NEW FLAVOR:
+       Add a new line following the same pattern, with a new
+       unique id, e.g.:
+         {id:'b6', name:'Pandesal con Egg & Mayo'},
+     ============================================================ */
+
+  const BOX_PRICE = 35;
+  const BOX_MIN = 12;
+  const BOX_MAX = 12;
+  const BOX_ITEMS = [
+    {id:'b1', name:'Plain Pandesal'},
+	{id:'b2', name:'Pandesal con Cheeese Pimiento'},
+    {id:'b3', name:'Pandesal con Corned Beef'},
+    {id:'b4', name:'Pandesal con Shanghai Filling'},
+    {id:'b5', name:'Pandesal con Chicken Skinless Longaniza'},
+    {id:'b6', name:'Cheese Bread'},
+    // {id:'b6', name:'Pandesal con Egg & Mayo'},
+  ];
+
   const products = [
     {id:'p1', section:'grid-pandesal', name:'Pandesal (8 PCS)', desc:'Home Made with whole meal flour, equipped with protein and carbs to fuel your day, Freshly Baked.', price:10, type:'bun', image: 'pandesal.jpg'},
     //{id:'p2', section:'grid-pandesal', name:'Pandesal with Cheese Pimiento', desc:"Your Favorite Palaman but made premium.", price:5, type:'bun'},
     //{id:'p3', section:'grid-pandesal', name:'Malunggay Pandesal (3 PCS)', desc:'Premium Pandesal, only healthier', price:10, type:'bun'},
-    {id:'p4', section:'grid-SavPandesal', name:'Pandesal con Corned Beef', desc:'Pandesal filled with your favorite corned beef', price:4, type:'bun'},
-    {id:'p5', section:'grid-SavPandesal', name:'Pandesal con Shanghai Filling', desc:'Pandesal filled with Chicken Shanghai with Sweet and Sour Sauce ', price:4, type:'bun'},
-    {id:'p6', section:'grid-SavPandesal', name:'Pandesal con Chicken Skinless Longaniza', desc:'Pandesal filled with Sweet and Garlicky flavors for your cravings ', price:4, type:'bun'},
+    {id:'p4', section:'grid-SavPandesal', name:'Pandesal con Corned Beef', desc:'Pandesal filled with your favorite corned beef', price:3, type:'bun'},
+    {id:'p5', section:'grid-SavPandesal', name:'Pandesal con Shanghai Filling', desc:'Pandesal filled with Chicken Shanghai with Sweet and Sour Sauce ', price:3, type:'bun'},
+    {id:'p6', section:'grid-SavPandesal', name:'Pandesal con Chicken Skinless Longaniza', desc:'Pandesal filled with Sweet and Garlicky flavors for your cravings ', price:3, type:'bun'},
     //{id:'p7', section:'grid-SavPandesal', name:'Pandesal con Egg & Mayo', desc:'Simple and delicious ', price:5, type:'bun'},
     //{id:'p8', section:'grid-SavPandesal', name:'Pandesal Filled Combo (4 PCS)', desc:'All Flavors in 1 Package [Corned Beef,Shanghai, Skinless Longaniza, Egg and Mayo]', price:30, type:'bun'},
     //{id:'p9', section:'grid-SavPandesal', name:'XXX', desc:'XXX ', price:15, type:'bun'},
     {id:'p10', section:'grid-SweetBread', name:'Pastillas Bread', desc:'Soft Bread filled with your favorite pastillas, warm, milky and soft, Topped with cream cheese.', price:10, type:'bun'},
-    //{id:'p11', section:'grid-SweetBread', name:'TBD', desc:'Coming Soon', price:0, type:'bun'},
+    {id:'p11', section:'grid-SweetBread', name:'Cheese Bread', desc:'Hugging Cheese bread coated with soft streussels', price:3, type:'bun'},
     //{id:'p12', section:'grid-SweetBread', name:'TBD', desc:'Coming Soon', price:0, type:'bun'},
   ];
 
@@ -581,12 +655,31 @@ z-index:5;
     grid.appendChild(card);
   });
 
+  // ---------- Build Your Own Box: special customize card ----------
+  const boxGrid = sections['grid-buildbox'];
+  if(boxGrid){
+    const boxCard = document.createElement('div');
+    boxCard.className = 'card';
+    boxCard.innerHTML = `
+      <div class="card-icon">${icon('bun')}</div>
+      <h3>Build Your Own Box</h3>
+      <p class="desc">Pick your own mix of flavors — exactly ${BOX_MAX} pieces per box.</p>
+      <div class="card-foot">
+        <span class="price mono">AED ${BOX_PRICE}</span>
+        <button class="btn btn-primary" id="openBoxBtn" type="button">Customize</button>
+      </div>`;
+    boxGrid.appendChild(boxCard);
+  }
+
   // ---------- Cart state (in-memory) ----------
   let cart = {}; // id -> qty
   let fulfilMode = 'pickup';
   const BUSINESS_WHATSAPP = '971586321718'; // country code + number, no + or spaces
   const MIN_ORDER = 35; // AED — minimum order total required before checkout is allowed
   document.getElementById('minOrderBannerVal').textContent = MIN_ORDER;
+
+  // Preferred date field can't be set to a day in the past
+  document.getElementById('custDate').min = new Date().toISOString().split('T')[0];
 
   document.addEventListener('click',e=>{
  if(e.target.classList.contains('qty-plus')){
@@ -667,7 +760,7 @@ const sub = subtotal();
   // ---------- Drawer / view switching ----------
   const overlay = document.getElementById('overlay');
   const drawer = document.getElementById('drawer');
-  const views = ['view-cart','view-checkout','view-confirm'];
+  const views = ['view-cart','view-checkout','view-confirm','view-box'];
 
   function openDrawer(view){
     overlay.classList.add('open');
@@ -703,7 +796,11 @@ const sub = subtotal();
   document.getElementById('closeDrawerBtn').addEventListener('click', closeDrawer);
   document.getElementById('closeDrawerBtn2').addEventListener('click', closeDrawer);
   document.getElementById('closeDrawerBtn3').addEventListener('click', closeDrawer);
+  document.getElementById('closeDrawerBtn4').addEventListener('click', closeDrawer);
+  document.getElementById('backFromBoxBtn').addEventListener('click', closeDrawer);
   overlay.addEventListener('click', closeDrawer);
+  const openBoxBtnEl = document.getElementById('openBoxBtn');
+  if(openBoxBtnEl) openBoxBtnEl.addEventListener('click', ()=> openDrawer('view-box'));
 
   document.getElementById('toCheckoutBtn').addEventListener('click', ()=> showView('view-checkout'));
   document.getElementById('backToCartBtn').addEventListener('click', ()=> showView('view-cart'));
@@ -750,14 +847,22 @@ const sub = subtotal();
     const total = subtotal();
     const area = document.getElementById('custArea').value;
     const address = document.getElementById('custAddress').value.trim();
+    const dateVal = document.getElementById('custDate').value;
     const time = document.getElementById('custTime').value.trim();
     const notes = document.getElementById('custNotes').value.trim();
+
+    let dateFormatted = '';
+    if(dateVal){
+      const d = new Date(dateVal + 'T00:00:00');
+      dateFormatted = d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short', year:'numeric'});
+    }
 
     let message = `New order #${orderNo} — Always Bready\n\n${lines}\n\nTotal: AED ${total}\n\nName: ${name}\nPhone: ${phone}\nFulfilment: ${fulfilMode}`;
     if(fulfilMode === 'delivery'){
       message += `\nArea: ${area}`;
       if(address) message += `\nAddress: ${address}`;
     }
+    if(dateFormatted) message += `\nPreferred date: ${dateFormatted}`;
     if(time) message += `\nPreferred time: ${time}`;
     if(notes) message += `\nNotes: ${notes}`;
     message += `\n\n(Payment on ${fulfilMode})`;
@@ -780,12 +885,89 @@ const sub = subtotal();
     document.getElementById('custPhone').value='';
     document.getElementById('custArea').selectedIndex=0;
     document.getElementById('custAddress').value='';
-    document.getElementById('custTime').value='';
+    document.getElementById('custDate').value='';
+    document.getElementById('custTime').selectedIndex=0;
     document.getElementById('custNotes').value='';
     optPickup.click();
+    boxSelections = {};
+    renderBoxItems();
     closeDrawer();
   });
 
+  // ---------- Build Your Own Box: customization state ----------
+  let boxSelections = {}; // item id -> qty, capped at BOX_MAX total pieces
+
+  function renderBoxItems(){
+    const list = document.getElementById('boxItemsList');
+    list.innerHTML = BOX_ITEMS.map(it=>{
+      const qty = boxSelections[it.id] || 0;
+      return `<div class="cart-item">
+        <div class="cart-item-info"><h4>${it.name}</h4></div>
+        <div class="qty-control" data-id="${it.id}">
+          <button class="box-qty-minus" data-id="${it.id}">&minus;</button>
+          <span class="qty-val mono">${qty}</span>
+          <button class="box-qty-plus" data-id="${it.id}">+</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    const total = Object.values(boxSelections).reduce((s,q)=>s+q,0);
+    const counterEl = document.getElementById('boxCounter');
+    if(total < BOX_MIN){
+      counterEl.textContent = `${total} / ${BOX_MAX} selected — pick ${BOX_MIN - total} more`;
+    } else {
+      counterEl.textContent = `${total} / ${BOX_MAX} selected — ready to add`;
+    }
+    document.getElementById('addBoxBtn').disabled = total !== BOX_MIN;
+
+    list.querySelectorAll('.box-qty-plus').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.dataset.id;
+        const currentTotal = Object.values(boxSelections).reduce((s,q)=>s+q,0);
+        if(currentTotal >= BOX_MAX) return;
+        boxSelections[id] = (boxSelections[id]||0) + 1;
+        renderBoxItems();
+      });
+    });
+    list.querySelectorAll('.box-qty-minus').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.dataset.id;
+        if(boxSelections[id]){
+          boxSelections[id]--;
+          if(boxSelections[id] <= 0) delete boxSelections[id];
+        }
+        renderBoxItems();
+      });
+    });
+  }
+
+  document.getElementById('addBoxBtn').addEventListener('click', ()=>{
+    const total = Object.values(boxSelections).reduce((s,q)=>s+q,0);
+    if(total !== BOX_MIN) return;
+
+    const descParts = Object.entries(boxSelections).map(([id,qty])=>{
+      const item = BOX_ITEMS.find(b=>b.id===id);
+      return `${qty}x ${item.name}`;
+    });
+
+    const newId = 'box-' + Date.now();
+    products.push({
+      id: newId,
+      section: 'grid-buildbox',
+      name: `Build Your Own Box (${total} pcs)`,
+      desc: descParts.join(', '),
+      price: BOX_PRICE,
+      type: 'bun'
+    });
+    cart[newId] = 1;
+
+    boxSelections = {};
+    renderBoxItems();
+    renderCart();
+    showView('view-cart');
+  });
+
+  renderBoxItems();
   renderCart();
 })();
 </script>

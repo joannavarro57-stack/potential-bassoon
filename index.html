@@ -354,7 +354,7 @@ z-index:5;
 </section>
 
 <footer>
-  ALWAYS BREADY — DUBAI, UAE — ORDERS CONFIRMED VIA PHONE / WHATSAPP
+  ALWAYS BREADY — DUBAI, UAE — ORDERS CONFIRMED VIA PHONE / WHATSAPP / MESSENGER
 </footer>
 
 <!-- Cart Drawer -->
@@ -459,15 +459,20 @@ z-index:5;
           <circle cx="35" cy="35" r="33" fill="none" stroke="#3E2417" stroke-width="1.5"/>
           <path d="M20,36 L30,46 L50,24" fill="none" stroke="#B8471F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <p>Thanks — your order has been received.</p>
+        <p>Thanks — your order has been received and saved.</p>
         <div class="order-no mono" id="orderNoDisplay">#ABrdy-0000</div>
-        <p>We're opening WhatsApp now to confirm your <span id="fulfilWord">pickup</span> time.<br>Payment is collected on delivery/pickup.</p>
+        <p>Tap a button below to confirm your <span id="fulfilWord">pickup</span> time with us.<br>Payment is collected on delivery/pickup.</p>
+        <p id="syncNote" style="display:none; color:var(--ember); font-size:12.5px; margin-top:10px;">We couldn't auto-save your order just now — please send it via WhatsApp or Messenger below so we don't miss it.</p>
       </div>
     </div>
     <div class="drawer-foot">
       <a class="full-btn wa-btn" id="whatsappBtn" href="#" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.4-.1-.6.1s-.7.9-.9 1-.3.2-.6.1a7.7 7.7 0 0 1-2.2-1.4 8.2 8.2 0 0 1-1.5-1.9c-.2-.3 0-.4.1-.6l.4-.5c.1-.1.2-.3.2-.4a.5.5 0 0 0 0-.5c-.1-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-1 2.3c0 1.3 1 2.6 1.1 2.8.1.1 2 3.1 4.8 4.3.7.3 1.2.5 1.6.6a3.8 3.8 0 0 0 1.8.1c.5-.1 1.7-.7 1.9-1.4.2-.6.2-1.2.2-1.3-.1-.1-.2-.2-.5-.3Z"/><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Z"/></svg>
-        Didn't open? Send on WhatsApp
+        Confirm via WhatsApp
+      </a>
+      <a class="full-btn" id="messengerBtn" href="#" target="_blank" rel="noopener" style="margin-top:8px; display:flex; align-items:center; justify-content:center; gap:8px; background:#00B2FF; color:#04263a; text-decoration:none;">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2C6.48 2 2 6.15 2 11.26c0 2.9 1.44 5.49 3.69 7.18V22l3.38-1.86c.9.25 1.86.38 2.93.38 5.52 0 10-4.15 10-9.26C22 6.15 17.52 2 12 2Zm1.02 12.47-2.55-2.72-4.98 2.72 5.48-5.82 2.61 2.72 4.92-2.72-5.48 5.82Z"/></svg>
+        Confirm via Messenger
       </a>
       <button class="full-btn" id="newOrderBtn" style="margin-top:8px; background:transparent; color:var(--crust); border:1px solid var(--crust);">Start a new order</button>
     </div>
@@ -475,8 +480,14 @@ z-index:5;
 
 </aside>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
+  // ---------- Supabase (order record of truth) ----------
+  const SUPABASE_URL = "https://icnknaidayqluqbwgdrk.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_5_MxTp-_IGIp_lGKOsAQMQ_Vj9xwZvB";
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
   // ---------- Product data ----------
   const scorePatterns = {
     boule: "M20,50 L80,20 M20,20 L80,50 M50,15 L50,55",
@@ -675,6 +686,7 @@ z-index:5;
   let cart = {}; // id -> qty
   let fulfilMode = 'pickup';
   const BUSINESS_WHATSAPP = '971586321718'; // country code + number, no + or spaces
+  const FB_PAGE_USERNAME = 'AlwaysBready'; // facebook.com/AlwaysBready
   const MIN_ORDER = 35; // AED — minimum order total required before checkout is allowed
   document.getElementById('minOrderBannerVal').textContent = MIN_ORDER;
 
@@ -822,7 +834,7 @@ const sub = subtotal();
   });
 
   // Confirm order
-  document.getElementById('confirmOrderBtn').addEventListener('click', ()=>{
+  document.getElementById('confirmOrderBtn').addEventListener('click', async ()=>{
     if(subtotal() < MIN_ORDER){
       alert(`Minimum order is AED ${MIN_ORDER}. Please add more items before checking out.`);
       showView('view-cart');
@@ -834,11 +846,14 @@ const sub = subtotal();
       alert('Please add your name and phone number so we can confirm the order.');
       return;
     }
-    const orderNo = 'ABrdy-' + Math.floor(1000 + Math.random()*9000);
-    document.getElementById('orderNoDisplay').textContent = '#' + orderNo;
-    document.getElementById('fulfilWord').textContent = fulfilMode;
 
-    // Build order lines
+    const confirmBtn = document.getElementById('confirmOrderBtn');
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Placing order…';
+
+    const orderNo = 'ABrdy-' + Math.floor(1000 + Math.random()*9000);
+
+    // Build order lines / items payload
     const entries = Object.entries(cart).filter(([,q])=>q>0);
     const lines = entries.map(([id,qty])=>{
       const p = getProduct(id);
@@ -850,6 +865,11 @@ const sub = subtotal();
       }
       return line;
     }).join('\n');
+    const itemsPayload = entries.map(([id,qty])=>{
+      const p = getProduct(id);
+      const flavors = (id.startsWith('box-') && p.desc) ? p.desc.split(', ') : [];
+      return { qty, name: p.name, price: p.price, flavors };
+    });
     const total = subtotal();
     const area = document.getElementById('custArea').value;
     const address = document.getElementById('custAddress').value.trim();
@@ -863,6 +883,38 @@ const sub = subtotal();
       dateFormatted = d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short', year:'numeric'});
     }
 
+    // ---- 1. Save to Supabase FIRST — this is the source of truth for the order,
+    // independent of whether WhatsApp/Messenger cooperate. ----
+    let savedOk = true;
+    try{
+      const { error } = await supabaseClient.from('orders').insert([{
+        id: orderNo,
+        name,
+        phone,
+        fulfilment: fulfilMode,
+        area: fulfilMode === 'delivery' ? area : null,
+        address: fulfilMode === 'delivery' ? address : null,
+        total,
+        pref_date: dateFormatted || null,
+        pref_time: time || null,
+        notes: notes || null,
+        items: itemsPayload,
+        status: 'pending',
+        received_at: new Date().toISOString(),
+        delivered_at: null
+      }]);
+      if(error){ savedOk = false; console.error('Supabase insert error:', error); }
+    }catch(err){
+      savedOk = false;
+      console.error('Supabase insert failed:', err);
+    }
+
+    document.getElementById('orderNoDisplay').textContent = '#' + orderNo;
+    document.getElementById('fulfilWord').textContent = fulfilMode;
+
+    // ---- 2. Build the messaging text and both channel links. Neither auto-opens —
+    // the customer picks one, which avoids the "identical templated message fired
+    // from an unrecognized number" pattern that gets WhatsApp Business numbers flagged. ----
     let message = `New order #${orderNo} — Always Bready\n\n${lines}\n\nTotal: AED ${total}\n\nName: ${name}\nPhone: ${phone}\nFulfilment: ${fulfilMode}`;
     if(fulfilMode === 'delivery'){
       message += `\nArea: ${area}`;
@@ -874,14 +926,19 @@ const sub = subtotal();
     message += `\n\n(Payment on ${fulfilMode})`;
 
     const waLink = `https://wa.me/${BUSINESS_WHATSAPP}?text=${encodeURIComponent(message)}`;
+    const messengerLink = `https://m.me/${FB_PAGE_USERNAME}?text=${encodeURIComponent(message)}`;
     document.getElementById('whatsappBtn').href = waLink;
+    const messengerBtn = document.getElementById('messengerBtn');
+    if(messengerBtn) messengerBtn.href = messengerLink;
 
+    const syncNote = document.getElementById('syncNote');
+    if(syncNote){
+      syncNote.style.display = savedOk ? 'none' : 'block';
+    }
+
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = 'Confirm order — pay on delivery/pickup';
     showView('view-confirm');
-
-    // Auto-open WhatsApp right away — this fires inside the same click event as
-    // the "Confirm order" button, so browsers treat it as a direct user action
-    // and won't block it as a popup. The button above still works as a fallback.
-    window.open(waLink, '_blank', 'noopener');
   });
 
   document.getElementById('newOrderBtn').addEventListener('click', ()=>{

@@ -539,6 +539,33 @@ z-index:5;
                      the drawn icon automatically — nothing breaks.
      ============================================================ */
 
+  /* ============================================================
+     SOLD OUT MODE
+     (flip this ONE line when you're sold out for the day)
+     ============================================================
+
+     SOLD_OUT -> set to true to instantly mark the whole shop as
+                 sold out. This will:
+                   - show a banner across the top of the site
+                   - change the scrolling ticker to say sold out
+                   - hide the delivery/minimum-order banner
+                   - grey out and disable every "+" button and
+                     the "Customize" box button, so nothing new
+                     can be added to cart
+                   - change the Cart button to "Sold Out"
+
+                 Set it back to false the moment you're baking
+                 again — everything returns to normal instantly,
+                 no other edits needed.
+
+     SOLD_OUT_MESSAGE -> the text shown in the banner. Edit this
+                 anytime, even while SOLD_OUT is false — it only
+                 shows up once SOLD_OUT is true.
+     ============================================================ */
+
+  const SOLD_OUT = True;
+  const SOLD_OUT_MESSAGE = "We're sold out for today! Salamat sa suporta 🍞 — check back tomorrow, or follow our socials for the next bake.";
+
   const MENU_SECTIONS = [
     {id:'grid-buildbox', title:'Build Your Own Box', tag:'Mix & match, up to 12 pcs'},
     {id:'grid-pandesal',  title:'Hot Pandesal',  tag:'Warm and Moist'},
@@ -681,6 +708,46 @@ z-index:5;
       </div>`;
     boxGrid.appendChild(boxCard);
   }
+
+  // ---------- Sold Out mode ----------
+  // Reads the SOLD_OUT / SOLD_OUT_MESSAGE flags near the top of this file.
+  function applySoldOutMode(){
+    if(!SOLD_OUT) return;
+
+    // 1. Banner across the very top of the page
+    const banner = document.createElement('div');
+    banner.id = 'soldOutBanner';
+    banner.setAttribute('role', 'status');
+    banner.style.cssText = 'background:var(--ember);color:var(--flour);text-align:center;font-family:"Space Mono",monospace;font-size:13px;font-weight:700;letter-spacing:0.03em;padding:12px 16px;line-height:1.5;';
+    banner.textContent = '🚫 ' + SOLD_OUT_MESSAGE;
+    document.body.insertBefore(banner, document.body.firstChild);
+
+    // 2. Scrolling "today" ticker now repeats the sold-out message
+    document.querySelectorAll('.today-track span').forEach(s=>{
+      s.textContent = '◦ SOLD OUT FOR TODAY — Salamat sa suporta!';
+    });
+
+    // 3. Hide the delivery/minimum-order banner — no more orders being taken
+    const minBanner = document.querySelector('.min-order-banner');
+    if(minBanner) minBanner.style.display = 'none';
+
+    // 4. Grey out and disable every add button + the box "Customize" button
+    document.querySelectorAll('.qty-plus, .qty-minus, #openBoxBtn').forEach(btn=>{
+      btn.disabled = true;
+      btn.style.opacity = '0.35';
+      btn.style.cursor = 'not-allowed';
+    });
+
+    // 5. Cart button reflects sold-out state and can't be opened
+    const cartBtn = document.getElementById('cartOpenBtn');
+    if(cartBtn){
+      cartBtn.innerHTML = 'Sold Out';
+      cartBtn.disabled = true;
+      cartBtn.style.opacity = '0.6';
+      cartBtn.style.cursor = 'not-allowed';
+    }
+  }
+  applySoldOutMode();
 
   // ---------- Cart state (in-memory) ----------
   let cart = {}; // id -> qty

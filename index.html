@@ -252,6 +252,23 @@
 .qty-control button{width:30px;height:30px;border:1px solid var(--crust);border-radius:50%;background:transparent;cursor:pointer;flex-shrink:0}
 .menu-qty{min-width:20px;text-align:center;font-weight:bold}
 
+/* -------- Per-item sold out -------- */
+.card.item-sold-out{opacity:0.55;}
+.card.item-sold-out .card-icon{position:relative;}
+.sold-out-badge{
+  position:absolute; top:10px; right:10px; z-index:2;
+  background:var(--crust); color:var(--flour); font-family:'Space Mono', monospace;
+  font-size:10px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+  padding:4px 8px; border-radius:20px;
+}
+.card.item-sold-out .card-icon{filter:grayscale(60%);}
+.item-sold-out-label{
+  font-family:'Space Mono', monospace; font-size:12px; color:var(--crust-mid);
+  font-weight:700; letter-spacing:0.03em; text-transform:uppercase;
+}
+.box-item-sold-out{opacity:0.5;}
+.box-item-sold-out h4{text-decoration:line-through;}
+
 @media (max-width:640px){
   .qty-control{gap:6px}
   .qty-control button{width:25px;height:25px;font-size:13px}
@@ -537,6 +554,16 @@ z-index:5;
                      Leave this line out to use the drawn icon.
                      If the file can't be found, it falls back to
                      the drawn icon automatically — nothing breaks.
+          soldOut -> OPTIONAL. Add "soldOut: true," to mark just
+                     THIS ONE item as sold out today. It stays on
+                     the menu but greyed out with a "Sold Out" tag,
+                     and its +/- buttons are disabled. Everything
+                     else on the site keeps working normally.
+                     Remove the line (or set it to false) the
+                     moment it's back in stock. Example:
+                       {id:'p4', section:'grid-SavPandesal',
+                        name:'Pandesal con Corned Beef', ...,
+                        soldOut: true},
      ============================================================ */
 
   /* ============================================================
@@ -597,6 +624,12 @@ z-index:5;
        remove the "//". Example:
          // {id:'b3', name:'Pandesal con Shanghai Filling'},
 
+     TO MARK A FLAVOR AS SOLD OUT BUT STILL SHOW IT (greyed out,
+     crossed out, can't be picked — instead of disappearing):
+       Add "soldOut: true," to its line. Example:
+         {id:'b3', name:'Pandesal con Shanghai Filling', soldOut: true},
+       Remove it (or set to false) once it's back.
+
      TO PERMANENTLY REMOVE A FLAVOR:
        Delete its line entirely.
 
@@ -620,17 +653,17 @@ z-index:5;
   ];
 
   const products = [
-    {id:'p1', section:'grid-pandesal', name:'Pandesal (6 PCS)', desc:'Home Made with whole meal flour, equipped with protein and carbs to fuel your day, Freshly Baked.', price:10, type:'bun', image: 'pandesal.jpg'},
+    {id:'p1', section:'grid-pandesal', name:'Pandesal (6 PCS)', desc:'Home Made with whole meal flour, equipped with protein and carbs to fuel your day, Freshly Baked.', price:10, type:'bun', image: 'pandesal.jpg', soldOut: true},
     //{id:'p2', section:'grid-pandesal', name:'Pandesal with Cheese Pimiento', desc:"Your Favorite Palaman but made premium.", price:5, type:'bun'},
     //{id:'p3', section:'grid-pandesal', name:'Malunggay Pandesal (3 PCS)', desc:'Premium Pandesal, only healthier', price:10, type:'bun'},
-    {id:'p4', section:'grid-SavPandesal', name:'Pandesal con Corned Beef', desc:'Pandesal filled with your favorite corned beef', price:3, type:'bun',image: 'CB.jpg'},
-    {id:'p5', section:'grid-SavPandesal', name:'Pandesal con Shanghai Filling', desc:'Pandesal filled with Chicken Shanghai with Sweet and Sour Sauce ', price:3, type:'bun', image:'CS.png'},
-    {id:'p6', section:'grid-SavPandesal', name:'Pandesal con Chicken Skinless Longaniza', desc:'Pandesal filled with Sweet and Garlicky flavors for your cravings ', price:3, type:'bun', image: 'CL.png'},
+    {id:'p4', section:'grid-SavPandesal', name:'Pandesal con Corned Beef', desc:'Pandesal filled with your favorite corned beef', price:3, type:'bun',image: 'CB.jpg', soldOut: true},
+    {id:'p5', section:'grid-SavPandesal', name:'Pandesal con Shanghai Filling', desc:'Pandesal filled with Chicken Shanghai with Sweet and Sour Sauce ', price:3, type:'bun', image:'CS.png' , soldOut: true},
+    {id:'p6', section:'grid-SavPandesal', name:'Pandesal con Chicken Skinless Longaniza', desc:'Pandesal filled with Sweet and Garlicky flavors for your cravings ', price:3, type:'bun', image: 'CL.png', soldOut: true},
     //{id:'p7', section:'grid-SavPandesal', name:'Pandesal con Egg & Mayo', desc:'Simple and delicious ', price:5, type:'bun'},
     //{id:'p8', section:'grid-SavPandesal', name:'Pandesal Filled Combo (4 PCS)', desc:'All Flavors in 1 Package [Corned Beef,Shanghai, Skinless Longaniza, Egg and Mayo]', price:30, type:'bun'},
     //{id:'p9', section:'grid-SavPandesal', name:'XXX', desc:'XXX ', price:15, type:'bun'},
-    {id:'p10', section:'grid-SweetBread', name:'Pastillas Bread', desc:'Soft Bread filled with your favorite pastillas, warm, milky and soft, Topped with cream cheese and pastillas treat.', price:10, type:'bun', image: 'PB.jpg'},
-    {id:'p11', section:'grid-SweetBread', name:'Cheese Bready', desc:'Hugging Cheese bread coated with soft streussels', price:3, type:'bun', image:'CBY.jpg' },
+    {id:'p10', section:'grid-SweetBread', name:'Pastillas Bread', desc:'Soft Bread filled with your favorite pastillas, warm, milky and soft, Topped with cream cheese and pastillas treat.', price:10, type:'bun', image: 'PB.jpg', soldOut: true},
+    {id:'p11', section:'grid-SweetBread', name:'Cheese Bready', desc:'Hugging Cheese bread coated with soft streussels', price:3, type:'bun', image:'CBY.jpg', soldOut: true },
     //{id:'p12', section:'grid-SweetBread', name:'TBD', desc:'Coming Soon', price:0, type:'bun'},
   ];
 
@@ -675,19 +708,29 @@ z-index:5;
     const grid = sections[p.section];
     if(!grid){ return; } // section id typo guard — skip silently rather than crash
     const card = document.createElement('div');
-    card.className = 'card';
-    card.appendChild(buildIconEl(p));
+    card.className = 'card' + (p.soldOut ? ' item-sold-out' : '');
+    const iconEl = buildIconEl(p);
+    if(p.soldOut){
+      const badge = document.createElement('span');
+      badge.className = 'sold-out-badge';
+      badge.textContent = 'Sold Out';
+      iconEl.appendChild(badge);
+    }
+    card.appendChild(iconEl);
     const rest = document.createElement('div');
+    const controlsHtml = p.soldOut
+      ? `<span class="item-sold-out-label">Sold out today</span>`
+      : `<div class="qty-control" data-id="${p.id}">
+        <button class="qty-minus" data-id="${p.id}">−</button>
+        <span class="menu-qty mono" id="menuQty-${p.id}">0</span>
+        <button class="qty-plus" data-id="${p.id}">+</button>
+        </div>`;
     rest.innerHTML = `
       <h3>${p.name}</h3>
       <p class="desc">${p.desc}</p>
       <div class="card-foot">
         <span class="price mono">AED ${p.price}</span>
-        <div class="qty-control" data-id="${p.id}">
-        <button class="qty-minus" data-id="${p.id}">−</button>
-        <span class="menu-qty mono" id="menuQty-${p.id}">0</span>
-        <button class="qty-plus" data-id="${p.id}">+</button>
-        </div>
+        ${controlsHtml}
       </div>`;
     while(rest.firstChild) card.appendChild(rest.firstChild);
     grid.appendChild(card);
@@ -1031,6 +1074,12 @@ const sub = subtotal();
     const list = document.getElementById('boxItemsList');
     list.innerHTML = BOX_ITEMS.map(it=>{
       const qty = boxSelections[it.id] || 0;
+      if(it.soldOut){
+        return `<div class="cart-item box-item-sold-out">
+          <div class="cart-item-info"><h4>${it.name}</h4></div>
+          <span class="item-sold-out-label">Sold out</span>
+        </div>`;
+      }
       return `<div class="cart-item">
         <div class="cart-item-info"><h4>${it.name}</h4></div>
         <div class="qty-control" data-id="${it.id}">

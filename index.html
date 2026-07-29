@@ -525,9 +525,17 @@ z-index:5;
 <script>
 (function(){
   // ---------- Supabase (order record of truth) ----------
+  // Wrapped in try/catch: if the Supabase script fails to load (slow network,
+  // ad-blocker, offline), the rest of the site — menu, cart, sold-out mode,
+  // date cutoff — must keep working. Only order auto-sync degrades.
   const SUPABASE_URL = "https://icnknaidayqluqbwgdrk.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_5_MxTp-_IGIp_lGKOsAQMQ_Vj9xwZvB";
-  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  let supabaseClient = null;
+  try{
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }catch(err){
+    console.error('Supabase failed to initialize (order auto-sync disabled):', err);
+  }
 
   // ---------- Product data ----------
   const scorePatterns = {
@@ -1099,27 +1107,31 @@ const sub = subtotal();
     // ---- 1. Save to Supabase FIRST — this is the source of truth for the order,
     // independent of whether WhatsApp/Messenger cooperate. ----
     let savedOk = true;
-    try{
-      const { error } = await supabaseClient.from('orders').insert([{
-        id: orderNo,
-        name,
-        phone,
-        fulfilment: fulfilMode,
-        area: fulfilMode === 'delivery' ? area : null,
-        address: fulfilMode === 'delivery' ? address : null,
-        total,
-        pref_date: dateFormatted || null,
-        pref_time: time || null,
-        notes: notes || null,
-        items: itemsPayload,
-        status: 'pending',
-        received_at: new Date().toISOString(),
-        delivered_at: null
-      }]);
-      if(error){ savedOk = false; console.error('Supabase insert error:', error); }
-    }catch(err){
+    if(!supabaseClient){
       savedOk = false;
-      console.error('Supabase insert failed:', err);
+    } else {
+      try{
+        const { error } = await supabaseClient.from('orders').insert([{
+          id: orderNo,
+          name,
+          phone,
+          fulfilment: fulfilMode,
+          area: fulfilMode === 'delivery' ? area : null,
+          address: fulfilMode === 'delivery' ? address : null,
+          total,
+          pref_date: dateFormatted || null,
+          pref_time: time || null,
+          notes: notes || null,
+          items: itemsPayload,
+          status: 'pending',
+          received_at: new Date().toISOString(),
+          delivered_at: null
+        }]);
+        if(error){ savedOk = false; console.error('Supabase insert error:', error); }
+      }catch(err){
+        savedOk = false;
+        console.error('Supabase insert failed:', err);
+      }
     }
 
     document.getElementById('orderNoDisplay').textContent = '#' + orderNo;

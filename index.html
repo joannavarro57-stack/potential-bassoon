@@ -860,36 +860,30 @@ z-index:5;
   /* ============================================================
      LATE-ORDER CUTOFF
      ============================================================
-     ORDER_CUTOFF_HOUR -> the hour (24h, Dubai time) after which
-       an order can no longer be fulfilled the same day. Orders
-       placed at or after this hour can only be scheduled for
-       pickup/delivery from 6PM the NEXT day onward.
+     ORDER_CUTOFF_HOUR -> the hour (24h, on the customer's own
+       device clock) after which an order can no longer be
+       fulfilled the same day. At or after this hour, the
+       "Preferred date" field will not let today be picked —
+       the earliest date becomes tomorrow.
        Currently set to 14, i.e. 2PM.
 
      This automatically:
-       - updates the earliest selectable "Preferred date"
+       - disables today in the "Preferred date" field once it's
+         past the cutoff hour
        - shows a note about it in the banner under the ticker
          (the same banner that shows the minimum order)
-     No other edits needed — it re-checks the time on every visit.
+     No other edits needed — it re-checks the clock every time
+     someone opens checkout or confirms an order.
      ============================================================ */
-  const ORDER_CUTOFF_HOUR = 14; // 2 PM
-  const BUSINESS_TIMEZONE = 'Asia/Dubai';
+  const ORDER_CUTOFF_HOUR = 14; // 2 PM, device/browser local time
 
-  function getBusinessHourNow(){
-    const parts = new Intl.DateTimeFormat('en-US', {timeZone: BUSINESS_TIMEZONE, hour:'2-digit', hour12:false}).formatToParts(new Date());
-    const hourPart = parts.find(p=>p.type==='hour');
-    return hourPart ? parseInt(hourPart.value, 10) : new Date().getHours();
-  }
-
-  function getBusinessDateISO(offsetDays){
-    const fmt = new Intl.DateTimeFormat('en-CA', {timeZone: BUSINESS_TIMEZONE, year:'numeric', month:'2-digit', day:'2-digit'});
-    const parts = fmt.formatToParts(new Date());
-    const y = parts.find(p=>p.type==='year').value;
-    const m = parts.find(p=>p.type==='month').value;
-    const d = parts.find(p=>p.type==='day').value;
-    const businessDate = new Date(`${y}-${m}-${d}T00:00:00`);
-    businessDate.setDate(businessDate.getDate() + offsetDays);
-    return businessDate.toISOString().split('T')[0];
+  function getLocalDateISO(offsetDays){
+    const d = new Date();
+    d.setDate(d.getDate() + offsetDays);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
   }
 
   // Recomputes the cutoff state fresh (not cached) and re-applies it to the
@@ -897,15 +891,15 @@ z-index:5;
   // again right before an order is confirmed — so a tab left open across
   // the 2PM cutoff still enforces it correctly instead of using a stale value.
   let pastCutoff = false;
-  let earliestDateISO = getBusinessDateISO(0);
+  let earliestDateISO = getLocalDateISO(0);
   function refreshCutoffState(){
-    pastCutoff = getBusinessHourNow() >= ORDER_CUTOFF_HOUR;
-    earliestDateISO = getBusinessDateISO(pastCutoff ? 1 : 0);
+    pastCutoff = new Date().getHours() >= ORDER_CUTOFF_HOUR;
+    earliestDateISO = getLocalDateISO(pastCutoff ? 1 : 0);
 
     // Preferred date field can't be set earlier than the earliest fulfillable day
-    document.getElementById('custDate').min = earliestDateISO;
-    // If a previously-picked date is now too early (session crossed the cutoff), clear it
     const dateInput = document.getElementById('custDate');
+    dateInput.min = earliestDateISO;
+    // If a previously-picked date is now too early (session crossed the cutoff), clear it
     if(dateInput.value && dateInput.value < earliestDateISO){
       dateInput.value = '';
     }

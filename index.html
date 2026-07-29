@@ -908,7 +908,7 @@ z-index:5;
     const minOrderBannerEl = document.querySelector('.min-order-banner');
     if(minOrderBannerEl && !SOLD_OUT){
       const cutoffNote = pastCutoff
-        ? `Orders placed after 2PM are for pickup/delivery from 6PM tomorrow`
+        ? `Orders placed after 2PM are for pickup/delivery next day | Delivery after 6PM`
         : `Delivery after 6PM`;
       minOrderBannerEl.innerHTML = `${cutoffNote}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Minimum Order: AED <span id="minOrderBannerVal">${MIN_ORDER}</span>`;
     }

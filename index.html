@@ -181,8 +181,18 @@
   .about-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center;}
   .about h2{font-size:30px; font-weight:500; margin-bottom:14px;}
   .about p{color:var(--crust-mid); line-height:1.7; font-size:15px;}
+  .about-socials{display:flex; gap:20px; margin-top:20px; flex-wrap:wrap;}
+  .about-socials a{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:'Space Mono', monospace; font-size:12.5px; letter-spacing:0.04em; text-transform:uppercase;
+    color:var(--crust); text-decoration:none; border-bottom:1px solid var(--crust); padding-bottom:3px;
+    transition:color .15s, border-color .15s;
+  }
+  .about-socials a svg{flex-shrink:0;}
+  .about-socials a:hover{color:var(--ember); border-color:var(--ember);}
   @media (max-width:720px){
     .about-grid{grid-template-columns:1fr; text-align:center; gap:28px;}
+    .about-socials{justify-content:center;}
   }
   @media (max-width:640px){
     .about{padding:40px 0;}
@@ -365,13 +375,27 @@ z-index:5;
     <div>
       <h2>Simple Tastes<br>Warm neighbourhood.</h2>
       <p>Always Bready mixes each night, proofs slow, and makes sure you get the softest, freshest bread. No preservatives, no shortcuts, all but freshest ingredients. Order ahead for pickup, or have it delivered across Discovery Gardens, The Gardens, And Al Furjan.</p>
+      <div class="about-socials">
+        <a href="https://instagram.com/alwaysbready_ae" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/></svg>
+          Instagram
+        </a>
+        <a href="https://www.tiktok.com/@always.bready" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M16.6 2h-3.2v13.4a2.9 2.9 0 1 1-2.1-2.8v-3.3a6.2 6.2 0 1 0 5.3 6.1V8.9a7.9 7.9 0 0 0 4.4 1.3V7a4.7 4.7 0 0 1-4.4-5Z"/></svg>
+          TikTok
+        </a>
+        <a href="https://facebook.com/AlwaysBready" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2C6.48 2 2 6.15 2 11.26c0 2.9 1.44 5.49 3.69 7.18V22l3.38-1.86c.9.25 1.86.38 2.93.38 5.52 0 10-4.15 10-9.26C22 6.15 17.52 2 12 2Zm1.02 12.47-2.55-2.72-4.98 2.72 5.48-5.82 2.61 2.72 4.92-2.72-5.48 5.82Z"/></svg>
+          Messenger
+        </a>
+      </div>
     </div>
     <img src="logo.jpeg" alt="Always Bready logo" style="width:100%; max-width:300px; margin:0 auto; display:block;">
   </div>
 </section>
 
 <footer>
-  ALWAYS BREADY — DUBAI, UAE — ORDERS CONFIRMED VIA PHONE / WHATSAPP / MESSENGER
+  ALWAYS BREADY — DUBAI, UAE — ORDERS CONFIRMED VIA <span id="footerChannels">PHONE / WHATSAPP / MESSENGER</span>
 </footer>
 
 <!-- Cart Drawer -->
@@ -653,17 +677,17 @@ z-index:5;
   ];
 
   const products = [
-    {id:'p1', section:'grid-pandesal', name:'Pandesal (6 PCS)', desc:'Home Made with whole meal flour, equipped with protein and carbs to fuel your day, Freshly Baked.', price:10, type:'bun', image: 'pandesal.jpg', soldOut: true},
+    {id:'p1', section:'grid-pandesal', name:'Pandesal (6 PCS)', desc:'Home Made with whole meal flour, equipped with protein and carbs to fuel your day, Freshly Baked.', price:10, type:'bun', image: 'pandesal.jpg'},
     //{id:'p2', section:'grid-pandesal', name:'Pandesal with Cheese Pimiento', desc:"Your Favorite Palaman but made premium.", price:5, type:'bun'},
     //{id:'p3', section:'grid-pandesal', name:'Malunggay Pandesal (3 PCS)', desc:'Premium Pandesal, only healthier', price:10, type:'bun'},
-    {id:'p4', section:'grid-SavPandesal', name:'Pandesal con Corned Beef', desc:'Pandesal filled with your favorite corned beef', price:3, type:'bun',image: 'CB.jpg', soldOut: true},
-    {id:'p5', section:'grid-SavPandesal', name:'Pandesal con Shanghai Filling', desc:'Pandesal filled with Chicken Shanghai with Sweet and Sour Sauce ', price:3, type:'bun', image:'CS.png' , soldOut: true},
-    {id:'p6', section:'grid-SavPandesal', name:'Pandesal con Chicken Skinless Longaniza', desc:'Pandesal filled with Sweet and Garlicky flavors for your cravings ', price:3, type:'bun', image: 'CL.png', soldOut: true},
+    {id:'p4', section:'grid-SavPandesal', name:'Pandesal con Corned Beef', desc:'Pandesal filled with your favorite corned beef', price:3, type:'bun',image: 'CB.jpg'},
+    {id:'p5', section:'grid-SavPandesal', name:'Pandesal con Shanghai Filling', desc:'Pandesal filled with Chicken Shanghai with Sweet and Sour Sauce ', price:3, type:'bun', image:'CS.png'},
+    {id:'p6', section:'grid-SavPandesal', name:'Pandesal con Chicken Skinless Longaniza', desc:'Pandesal filled with Sweet and Garlicky flavors for your cravings ', price:3, type:'bun', image: 'CL.png'},
     //{id:'p7', section:'grid-SavPandesal', name:'Pandesal con Egg & Mayo', desc:'Simple and delicious ', price:5, type:'bun'},
     //{id:'p8', section:'grid-SavPandesal', name:'Pandesal Filled Combo (4 PCS)', desc:'All Flavors in 1 Package [Corned Beef,Shanghai, Skinless Longaniza, Egg and Mayo]', price:30, type:'bun'},
     //{id:'p9', section:'grid-SavPandesal', name:'XXX', desc:'XXX ', price:15, type:'bun'},
-    {id:'p10', section:'grid-SweetBread', name:'Pastillas Bread', desc:'Soft Bread filled with your favorite pastillas, warm, milky and soft, Topped with cream cheese and pastillas treat.', price:10, type:'bun', image: 'PB.jpg', soldOut: true},
-    {id:'p11', section:'grid-SweetBread', name:'Cheese Bready', desc:'Hugging Cheese bread coated with soft streussels', price:3, type:'bun', image:'CBY.jpg', soldOut: true },
+    {id:'p10', section:'grid-SweetBread', name:'Pastillas Bread', desc:'Soft Bread filled with your favorite pastillas, warm, milky and soft, Topped with cream cheese and pastillas treat.', price:10, type:'bun', image: 'PB.jpg'},
+    {id:'p11', section:'grid-SweetBread', name:'Cheese Bready', desc:'Hugging Cheese bread coated with soft streussels', price:3, type:'bun', image:'CBY.jpg' },
     //{id:'p12', section:'grid-SweetBread', name:'TBD', desc:'Coming Soon', price:0, type:'bun'},
   ];
 
@@ -795,13 +819,85 @@ z-index:5;
   // ---------- Cart state (in-memory) ----------
   let cart = {}; // id -> qty
   let fulfilMode = 'pickup';
-  const BUSINESS_WHATSAPP = '971586321718'; // country code + number, no + or spaces
+
+  /* ============================================================
+     WHATSAPP CONFIRMATION BUTTON
+     ============================================================
+     Your WhatsApp Business number is currently blocked, so the
+     WhatsApp confirm button is hidden for now — customers only
+     see the Messenger option.
+
+     TO TURN WHATSAPP BACK ON once you have a working number:
+       1) Set WHATSAPP_ENABLED to true
+       2) Update BUSINESS_WHATSAPP below with the new number
+          (country code + number, no + or spaces, e.g. 9715XXXXXXXX)
+     The button reappears automatically — nothing else to change.
+     ============================================================ */
+  const WHATSAPP_ENABLED = false;
+  const BUSINESS_WHATSAPP = '971586321718'; // update with the new number before re-enabling
   const FB_PAGE_USERNAME = 'AlwaysBready'; // facebook.com/AlwaysBready
+
+  const whatsappBtnEl = document.getElementById('whatsappBtn');
+  if(whatsappBtnEl && !WHATSAPP_ENABLED){
+    whatsappBtnEl.classList.add('hidden');
+    const syncNoteEl = document.getElementById('syncNote');
+    if(syncNoteEl) syncNoteEl.textContent = "We couldn't auto-save your order just now — please send it via Messenger below so we don't miss it.";
+    const footerChannelsEl = document.getElementById('footerChannels');
+    if(footerChannelsEl) footerChannelsEl.textContent = 'PHONE / MESSENGER';
+  }
+
   const MIN_ORDER = 35; // AED — minimum order total required before checkout is allowed
   document.getElementById('minOrderBannerVal').textContent = MIN_ORDER;
 
-  // Preferred date field can't be set to a day in the past
-  document.getElementById('custDate').min = new Date().toISOString().split('T')[0];
+  /* ============================================================
+     LATE-ORDER CUTOFF
+     ============================================================
+     ORDER_CUTOFF_HOUR -> the hour (24h, Dubai time) after which
+       an order can no longer be fulfilled the same day. Orders
+       placed at or after this hour can only be scheduled for
+       pickup/delivery from 6PM the NEXT day onward.
+       Currently set to 14, i.e. 2PM.
+
+     This automatically:
+       - updates the earliest selectable "Preferred date"
+       - shows a note about it in the banner under the ticker
+         (the same banner that shows the minimum order)
+     No other edits needed — it re-checks the time on every visit.
+     ============================================================ */
+  const ORDER_CUTOFF_HOUR = 14; // 2 PM
+  const BUSINESS_TIMEZONE = 'Asia/Dubai';
+
+  function getBusinessHourNow(){
+    const parts = new Intl.DateTimeFormat('en-US', {timeZone: BUSINESS_TIMEZONE, hour:'2-digit', hour12:false}).formatToParts(new Date());
+    const hourPart = parts.find(p=>p.type==='hour');
+    return hourPart ? parseInt(hourPart.value, 10) : new Date().getHours();
+  }
+
+  function getBusinessDateISO(offsetDays){
+    const fmt = new Intl.DateTimeFormat('en-CA', {timeZone: BUSINESS_TIMEZONE, year:'numeric', month:'2-digit', day:'2-digit'});
+    const parts = fmt.formatToParts(new Date());
+    const y = parts.find(p=>p.type==='year').value;
+    const m = parts.find(p=>p.type==='month').value;
+    const d = parts.find(p=>p.type==='day').value;
+    const businessDate = new Date(`${y}-${m}-${d}T00:00:00`);
+    businessDate.setDate(businessDate.getDate() + offsetDays);
+    return businessDate.toISOString().split('T')[0];
+  }
+
+  const pastCutoff = getBusinessHourNow() >= ORDER_CUTOFF_HOUR;
+  const earliestDateISO = getBusinessDateISO(pastCutoff ? 1 : 0);
+
+  // Preferred date field can't be set earlier than the earliest fulfillable day
+  document.getElementById('custDate').min = earliestDateISO;
+
+  // Update the same banner that shows the minimum order with a cutoff note
+  const minOrderBannerEl = document.querySelector('.min-order-banner');
+  if(minOrderBannerEl && !SOLD_OUT){
+    const cutoffNote = pastCutoff
+      ? `Orders placed after 2PM are for pickup/delivery from 6PM tomorrow`
+      : `Delivery after 6PM`;
+    minOrderBannerEl.innerHTML = `${cutoffNote}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Minimum Order: AED <span id="minOrderBannerVal">${MIN_ORDER}</span>`;
+  }
 
   document.addEventListener('click',e=>{
  if(e.target.classList.contains('qty-plus')){
@@ -956,6 +1052,13 @@ const sub = subtotal();
       alert('Please add your name and phone number so we can confirm the order.');
       return;
     }
+    const dateValCheck = document.getElementById('custDate').value;
+    if(dateValCheck && dateValCheck < earliestDateISO){
+      alert(pastCutoff
+        ? 'Orders placed after 2PM can only be scheduled from 6PM tomorrow onward. Please pick a later date.'
+        : 'Please pick today or a later date.');
+      return;
+    }
 
     const confirmBtn = document.getElementById('confirmOrderBtn');
     confirmBtn.disabled = true;
@@ -1035,9 +1138,11 @@ const sub = subtotal();
     if(notes) message += `\nNotes: ${notes}`;
     message += `\n\n(Payment on ${fulfilMode})`;
 
-    const waLink = `https://wa.me/${BUSINESS_WHATSAPP}?text=${encodeURIComponent(message)}`;
     const messengerLink = `https://m.me/${FB_PAGE_USERNAME}?text=${encodeURIComponent(message)}`;
-    document.getElementById('whatsappBtn').href = waLink;
+    if(WHATSAPP_ENABLED){
+      const waLink = `https://wa.me/${BUSINESS_WHATSAPP}?text=${encodeURIComponent(message)}`;
+      document.getElementById('whatsappBtn').href = waLink;
+    }
     const messengerBtn = document.getElementById('messengerBtn');
     if(messengerBtn) messengerBtn.href = messengerLink;
 

@@ -892,20 +892,34 @@ z-index:5;
     return businessDate.toISOString().split('T')[0];
   }
 
-  const pastCutoff = getBusinessHourNow() >= ORDER_CUTOFF_HOUR;
-  const earliestDateISO = getBusinessDateISO(pastCutoff ? 1 : 0);
+  // Recomputes the cutoff state fresh (not cached) and re-applies it to the
+  // date field + banner. Called on load, whenever checkout is opened, and
+  // again right before an order is confirmed — so a tab left open across
+  // the 2PM cutoff still enforces it correctly instead of using a stale value.
+  let pastCutoff = false;
+  let earliestDateISO = getBusinessDateISO(0);
+  function refreshCutoffState(){
+    pastCutoff = getBusinessHourNow() >= ORDER_CUTOFF_HOUR;
+    earliestDateISO = getBusinessDateISO(pastCutoff ? 1 : 0);
 
-  // Preferred date field can't be set earlier than the earliest fulfillable day
-  document.getElementById('custDate').min = earliestDateISO;
+    // Preferred date field can't be set earlier than the earliest fulfillable day
+    document.getElementById('custDate').min = earliestDateISO;
+    // If a previously-picked date is now too early (session crossed the cutoff), clear it
+    const dateInput = document.getElementById('custDate');
+    if(dateInput.value && dateInput.value < earliestDateISO){
+      dateInput.value = '';
+    }
 
-  // Update the same banner that shows the minimum order with a cutoff note
-  const minOrderBannerEl = document.querySelector('.min-order-banner');
-  if(minOrderBannerEl && !SOLD_OUT){
-    const cutoffNote = pastCutoff
-      ? `Orders placed after 2PM are for pickup/delivery from 6PM tomorrow`
-      : `Delivery after 6PM`;
-    minOrderBannerEl.innerHTML = `${cutoffNote}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Minimum Order: AED <span id="minOrderBannerVal">${MIN_ORDER}</span>`;
+    // Update the same banner that shows the minimum order with a cutoff note
+    const minOrderBannerEl = document.querySelector('.min-order-banner');
+    if(minOrderBannerEl && !SOLD_OUT){
+      const cutoffNote = pastCutoff
+        ? `Orders placed after 2PM are for pickup/delivery from 6PM tomorrow`
+        : `Delivery after 6PM`;
+      minOrderBannerEl.innerHTML = `${cutoffNote}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Minimum Order: AED <span id="minOrderBannerVal">${MIN_ORDER}</span>`;
+    }
   }
+  refreshCutoffState();
 
   document.addEventListener('click',e=>{
  if(e.target.classList.contains('qty-plus')){
@@ -1028,7 +1042,7 @@ const sub = subtotal();
   const openBoxBtnEl = document.getElementById('openBoxBtn');
   if(openBoxBtnEl) openBoxBtnEl.addEventListener('click', ()=> openDrawer('view-box'));
 
-  document.getElementById('toCheckoutBtn').addEventListener('click', ()=> showView('view-checkout'));
+  document.getElementById('toCheckoutBtn').addEventListener('click', ()=>{ refreshCutoffState(); showView('view-checkout'); });
   document.getElementById('backToCartBtn').addEventListener('click', ()=> showView('view-cart'));
 
   // Pickup / delivery toggle
@@ -1049,6 +1063,7 @@ const sub = subtotal();
 
   // Confirm order
   document.getElementById('confirmOrderBtn').addEventListener('click', async ()=>{
+    refreshCutoffState();
     if(subtotal() < MIN_ORDER){
       alert(`Minimum order is AED ${MIN_ORDER}. Please add more items before checking out.`);
       showView('view-cart');

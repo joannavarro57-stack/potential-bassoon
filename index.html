@@ -909,7 +909,7 @@ z-index:5;
     if(minOrderBannerEl && !SOLD_OUT){
       const cutoffNote = pastCutoff
         ? `Orders placed after 2PM are for pickup/delivery next day | Delivery after 6PM`
-        : `Delivery after 6PM`;
+        : `Orders placed after 2PM are for pickup/delivery next day | Delivery after 6PM`;
       minOrderBannerEl.innerHTML = `${cutoffNote}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Minimum Order: AED <span id="minOrderBannerVal">${MIN_ORDER}</span>`;
     }
   }

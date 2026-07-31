@@ -908,8 +908,8 @@ z-index:5;
     const minOrderBannerEl = document.querySelector('.min-order-banner');
     if(minOrderBannerEl && !SOLD_OUT){
       const cutoffNote = pastCutoff
-        ? `Orders placed after 2PM are for pickup/delivery next day | Delivery after 6PM`
-        : `Orders placed after 2PM are for pickup/delivery next day | Delivery after 6PM`;
+        ? `After 2PM orders, for pickup/delivery next day | Delivery after 6PM`
+        : `After 2PM orders, for pickup/delivery next day | Delivery after 6PM`;
       minOrderBannerEl.innerHTML = `${cutoffNote}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Minimum Order: AED <span id="minOrderBannerVal">${MIN_ORDER}</span>`;
     }
   }

@@ -153,6 +153,10 @@
   .card-icon svg{width:100px; height:90px;}
   .card h3{font-size:18px; font-weight:500;}
   .card p.desc{font-size:13px; color:var(--crust-mid); line-height:1.5; margin:0; min-height:36px;}
+  .stock-badge{font-family:'Space Mono', monospace; font-size:11px; color:var(--crust-mid); display:none;}
+  .stock-badge.show{display:inline-block;}
+  .stock-badge.low{color:var(--ember); font-weight:700;}
+  .stock-badge.out{color:var(--ember); font-weight:700;}
   .card-foot{display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:8px; gap:8px; flex-wrap:wrap;}
   .card-foot .btn{padding:8px 16px; font-size:13px;}
   .price{font-family:'Space Mono'; font-size:15px; font-weight:700;}
@@ -222,6 +226,8 @@
   .cart-item{display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--line);}
   .cart-item-info{flex:1;}
   .cart-item-info h4{font-size:14px; font-weight:600; margin:0 0 4px;}
+  .box-stock-note{font-family:'Space Mono', monospace; font-size:10.5px; color:var(--crust-mid); display:block; margin-top:2px;}
+  .box-stock-note.low{color:var(--ember); font-weight:700;}
   .qty-row{display:flex; align-items:center; gap:10px; margin-top:6px;}
   .qty-btn{width:24px; height:24px; border-radius:50%; border:1px solid var(--crust); background:none; cursor:pointer; font-size:14px;}
   .qty-val{font-family:'Space Mono'; font-size:13px; min-width:16px; text-align:center;}
@@ -537,6 +543,67 @@ z-index:5;
     console.error('Supabase failed to initialize (order auto-sync disabled):', err);
   }
 
+  // ---------- Live inventory estimate ----------
+  // Read-only from this page's perspective — flavor -> quantity in stock,
+  // kept in sync with the "Inventory & production plan" panel on the admin
+  // dashboard. Falls back to "no estimate" (undefined) if the table can't be
+  // reached, in which case flavors just behave as before (manual soldOut only).
+  let INVENTORY_EST = {};
+  async function fetchInventoryEstimate(){
+    if(!supabaseClient) return;
+    try{
+      const { data, error } = await supabaseClient.from('inventory').select('*');
+      if(error){ console.error('Inventory fetch error:', error.message); return; }
+      const next = {};
+      (data || []).forEach(row => { next[row.flavor] = row.quantity || 0; });
+      INVENTORY_EST = next;
+      applyInventoryToUI();
+    }catch(err){
+      console.error('Inventory fetch failed:', err);
+    }
+  }
+  function estimateFor(name){
+    return Object.prototype.hasOwnProperty.call(INVENTORY_EST, name) ? INVENTORY_EST[name] : undefined;
+  }
+
+  // How much of a given flavor is already sitting in the customer's cart or
+  // in-progress box selection — subtracted from the raw estimate so the
+  // displayed number counts down live as they add items, before checkout.
+  function reservedQtyForFlavor(name){
+    let reserved = 0;
+    Object.entries(cart).forEach(([id, qty]) => {
+      if(!qty) return;
+      const p = getProduct(id);
+      if(!p) return;
+      if(p.name === name){
+        reserved += qty; // standalone product matching this flavor
+      } else if(id.startsWith('box-') && p.desc){
+        // Box items in the cart carry their flavor breakdown as "3x Name, 9x Name"
+        p.desc.split(', ').forEach(part => {
+          const m = part.match(/^(\d+)x\s+(.+)$/);
+          if(m && m[2] === name) reserved += parseInt(m[1], 10) * qty;
+        });
+      }
+    });
+    Object.entries(boxSelections).forEach(([id, qty]) => {
+      if(!qty) return;
+      const item = BOX_ITEMS.find(b => b.id === id);
+      if(item && item.name === name) reserved += qty; // in-progress box, not yet added to cart
+    });
+    return reserved;
+  }
+
+  // Estimated stock minus whatever's already reserved by this customer's own
+  // cart/box-in-progress. Returns undefined if this flavor isn't tracked.
+  function effectiveRemaining(name){
+    const est = estimateFor(name);
+    if(est === undefined) return undefined;
+    return Math.max(0, est - reservedQtyForFlavor(name));
+  }
+
+  // Only worth telling the customer about once stock is genuinely low.
+  const LOW_STOCK_PROMPT_THRESHOLD = 5;
+
   // ---------- Product data ----------
   const scorePatterns = {
     boule: "M20,50 L80,20 M20,20 L80,50 M50,15 L50,55",
@@ -622,11 +689,10 @@ z-index:5;
                  shows up once SOLD_OUT is true.
      ============================================================ */
 
-  const SOLD_OUT = true;
-  const SOLD_OUT_MESSAGE = "We're taking off for the weekend, family time 🍞 — check back on Sunday, or follow our socials for the next bake.";
-
-  /*"We're sold out for today! Salamat sa suporta 🍞 — check back tomorrow, or follow our socials for the next bake."*/
-
+  const SOLD_OUT = false;
+  const SOLD_OUT_MESSAGE = "🚫 We're taking off for the weekend, family time 🍞 — check back on Sunday, or follow our socials for the next bake.";
+    /*🚫 We're taking off for the weekend, family time 🍞 — check back on Sunday, or follow our socials for the next bake.*/
+    /*🚫 Sold out for today — thanks for your orders! Check back tomorrow for the next bake, or follow our socials for updates.*/
   const MENU_SECTIONS = [
     {id:'grid-buildbox', title:'Build Your Own Box', tag:'Mix & match, up to 12 pcs'},
     {id:'grid-pandesal',  title:'Hot Pandesal',  tag:'Warm and Moist'},
@@ -743,6 +809,7 @@ z-index:5;
     if(!grid){ return; } // section id typo guard — skip silently rather than crash
     const card = document.createElement('div');
     card.className = 'card' + (p.soldOut ? ' item-sold-out' : '');
+    card.dataset.pid = p.id;
     const iconEl = buildIconEl(p);
     if(p.soldOut){
       const badge = document.createElement('span');
@@ -762,6 +829,7 @@ z-index:5;
     rest.innerHTML = `
       <h3>${p.name}</h3>
       <p class="desc">${p.desc}</p>
+      <span class="stock-badge" data-stock-badge></span>
       <div class="card-foot">
         <span class="price mono">AED ${p.price}</span>
         ${controlsHtml}
@@ -788,6 +856,46 @@ z-index:5;
 
   // ---------- Sold Out mode ----------
   // Reads the SOLD_OUT / SOLD_OUT_MESSAGE flags near the top of this file.
+  // ---------- Apply live inventory estimate to standalone product cards ----------
+  // Runs after fetchInventoryEstimate() resolves, and again on every refresh.
+  // Only touches flavors that actually have an inventory row — untracked
+  // flavors are left exactly as before (manual soldOut only).
+  function applyInventoryToUI(){
+    document.querySelectorAll('.card[data-pid]').forEach(card=>{
+      const pid = card.dataset.pid;
+      const p = products.find(x=>x.id===pid);
+      if(!p || p.soldOut) return; // manual sold-out already wins, don't touch
+      const remaining = effectiveRemaining(p.name);
+      const badge = card.querySelector('[data-stock-badge]');
+      if(remaining === undefined){
+        if(badge){ badge.classList.remove('show','low','out'); }
+        return;
+      }
+      const qtyControl = card.querySelector('.qty-control');
+      if(remaining <= 0){
+        card.classList.add('item-sold-out');
+        if(badge){ badge.textContent = 'Estimated: none left today'; badge.classList.add('show','out'); badge.classList.remove('low'); }
+        if(qtyControl) qtyControl.querySelectorAll('button').forEach(b=>b.disabled = true);
+      } else {
+        card.classList.remove('item-sold-out');
+        if(qtyControl) qtyControl.querySelectorAll('button').forEach(b=>b.disabled = false);
+        if(badge){
+          if(remaining <= LOW_STOCK_PROMPT_THRESHOLD){
+            badge.textContent = `Only ${remaining} left today — order before it's gone!`;
+            badge.classList.add('show','low');
+          } else {
+            // Plenty in stock — no need to bother the customer with a number.
+            badge.classList.remove('show','low');
+          }
+          badge.classList.remove('out');
+        }
+      }
+    });
+    // Box flavor picker re-renders its own rows on demand and reads
+    // INVENTORY_EST/cart live, so just refresh it if it's currently open.
+    if(typeof renderBoxItems === 'function') renderBoxItems();
+  }
+
   function applySoldOutMode(){
     if(!SOLD_OUT) return;
 
@@ -919,7 +1027,11 @@ z-index:5;
 
   document.addEventListener('click',e=>{
  if(e.target.classList.contains('qty-plus')){
-   const id=e.target.dataset.id;cart[id]=(cart[id]||0)+1;renderCart();
+   const id=e.target.dataset.id;
+   const p = getProduct(id);
+   const remaining = p ? effectiveRemaining(p.name) : undefined;
+   if(remaining !== undefined && remaining <= 0) return; // don't let cart exceed estimated stock
+   cart[id]=(cart[id]||0)+1;renderCart();
  }
  if(e.target.classList.contains('qty-minus')){
    const id=e.target.dataset.id;
@@ -985,12 +1097,22 @@ const sub = subtotal();
     body.querySelectorAll('[data-act]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const id = btn.dataset.id, act = btn.dataset.act;
-        if(act==='inc') cart[id]++;
+        if(act==='inc'){
+          const p = getProduct(id);
+          const remaining = p ? effectiveRemaining(p.name) : undefined;
+          if(remaining !== undefined && remaining <= 0) return; // don't exceed estimated stock
+          cart[id]++;
+        }
         if(act==='dec') cart[id] = Math.max(0, cart[id]-1);
         if(act==='rm') cart[id] = 0;
         renderCart();
       });
     });
+
+    // Keep stock badges (and the box builder, if open) reflecting what's
+    // now reserved in the cart — this is what makes the "left today" number
+    // count down live as the customer adds items, before checkout.
+    if(typeof applyInventoryToUI === 'function') applyInventoryToUI();
   }
 
   // ---------- Drawer / view switching ----------
@@ -1202,18 +1324,31 @@ const sub = subtotal();
     const list = document.getElementById('boxItemsList');
     list.innerHTML = BOX_ITEMS.map(it=>{
       const qty = boxSelections[it.id] || 0;
-      if(it.soldOut){
+      const rawEst = estimateFor(it.name);
+      const remaining = effectiveRemaining(it.name); // undefined if this flavor isn't tracked
+      const trulySoldOut = it.soldOut || (rawEst !== undefined && rawEst <= 0);
+
+      if(trulySoldOut){
         return `<div class="cart-item box-item-sold-out">
           <div class="cart-item-info"><h4>${it.name}</h4></div>
           <span class="item-sold-out-label">Sold out</span>
         </div>`;
       }
+
+      const atCap = remaining !== undefined && remaining <= 0;
+      let stockNoteHtml = '';
+      if(atCap){
+        stockNoteHtml = `<span class="box-stock-note low">Max available added</span>`;
+      } else if(remaining !== undefined && remaining <= LOW_STOCK_PROMPT_THRESHOLD){
+        stockNoteHtml = `<span class="box-stock-note low">Only ${remaining} left today</span>`;
+      }
+
       return `<div class="cart-item">
-        <div class="cart-item-info"><h4>${it.name}</h4></div>
+        <div class="cart-item-info"><h4>${it.name}</h4>${stockNoteHtml}</div>
         <div class="qty-control" data-id="${it.id}">
           <button class="box-qty-minus" data-id="${it.id}">&minus;</button>
           <span class="qty-val mono">${qty}</span>
-          <button class="box-qty-plus" data-id="${it.id}">+</button>
+          <button class="box-qty-plus" data-id="${it.id}" ${atCap ? 'disabled' : ''}>+</button>
         </div>
       </div>`;
     }).join('');
@@ -1232,6 +1367,9 @@ const sub = subtotal();
         const id = btn.dataset.id;
         const currentTotal = Object.values(boxSelections).reduce((s,q)=>s+q,0);
         if(currentTotal >= BOX_MAX) return;
+        const item = BOX_ITEMS.find(b=>b.id===id);
+        const remaining = item ? effectiveRemaining(item.name) : undefined;
+        if(remaining !== undefined && remaining <= 0) return; // don't exceed estimated stock
         boxSelections[id] = (boxSelections[id]||0) + 1;
         renderBoxItems();
       });
@@ -1276,6 +1414,22 @@ const sub = subtotal();
 
   renderBoxItems();
   renderCart();
+
+  // ---------- Live inventory: initial load + keep in sync ----------
+  fetchInventoryEstimate();
+  setInterval(fetchInventoryEstimate, 60000); // safety-net refresh, matches the admin dashboard's cadence
+  if(supabaseClient){
+    try{
+      supabaseClient
+        .channel('inventory-changes-storefront')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'inventory' }, () => {
+          fetchInventoryEstimate();
+        })
+        .subscribe();
+    }catch(err){
+      console.error('Inventory realtime subscribe failed:', err);
+    }
+  }
 })();
 </script>
 

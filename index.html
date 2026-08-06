@@ -555,7 +555,11 @@ z-index:5;
       const { data, error } = await supabaseClient.from('inventory').select('*');
       if(error){ console.error('Inventory fetch error:', error.message); return; }
       const next = {};
-      (data || []).forEach(row => { next[row.flavor] = row.quantity || 0; });
+      (data || []).forEach(row => {
+        const stock = row.quantity || 0;
+        const pending = row.pending_qty || 0; // already claimed by other customers' pending orders
+        next[row.flavor] = Math.max(0, stock - pending);
+      });
       INVENTORY_EST = next;
       applyInventoryToUI();
     }catch(err){
@@ -690,8 +694,8 @@ z-index:5;
      ============================================================ */
 
   const SOLD_OUT = false;
-  const SOLD_OUT_MESSAGE = "🚫 We're taking off for the weekend, family time 🍞 — check back on Sunday, or follow our socials for the next bake.";
-    /*🚫 We're taking off for the weekend, family time 🍞 — check back on Sunday, or follow our socials for the next bake.*/
+  const SOLD_OUT_MESSAGE = "We're sold out for today! Salamat sa suporta 🍞 — check back tomorrow, or follow our socials for the next bake.";
+	/*🚫 We're taking off for the weekend, family time 🍞 — check back on Sunday, or follow our socials for the next bake.*/
     /*🚫 Sold out for today — thanks for your orders! Check back tomorrow for the next bake, or follow our socials for updates.*/
   const MENU_SECTIONS = [
     {id:'grid-buildbox', title:'Build Your Own Box', tag:'Mix & match, up to 12 pcs'},
@@ -754,7 +758,7 @@ z-index:5;
 
   const products = [
     {id:'p1', section:'grid-pandesal', name:'Pandesal (8 PCS)', desc:'Home Made with whole meal flour, equipped with protein and carbs to fuel your day, Freshly Baked.', price:10, type:'bun', image: 'pandesal.jpg', soldOut: false},
-    {id:'p2', section:'grid-pandesal', name:'Pandesal con Cheese', desc:"Your Favorite Palaman but made gooey and pull-ey.", price:5, type:'bun', soldOut: false},
+    {id:'p2', section:'grid-pandesal', name:'Pandesal with Cheese', desc:"Your Favorite Palaman but made gooey and pull-ey.", price:5, type:'bun', soldOut: false},
     //{id:'p3', section:'grid-pandesal', name:'Malunggay Pandesal (3 PCS)', desc:'Premium Pandesal, only healthier', price:10, type:'bun'},
     {id:'p4', section:'grid-SavPandesal', name:'Pandesal con Corned Beef', desc:'Pandesal filled with your favorite corned beef', price:3, type:'bun',image: 'CB.jpg', soldOut: false },
     {id:'p5', section:'grid-SavPandesal', name:'Pandesal con Shanghai Filling', desc:'Pandesal filled with Chicken Shanghai with Sweet and Sour Sauce ', price:3, type:'bun', image:'CS.png', soldOut: false },

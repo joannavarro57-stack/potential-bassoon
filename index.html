@@ -3,7 +3,151 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Always Bready — Baked Fresh Ready</title>
+
+<!-- ============================================================
+     SEO — PRIMARY TAGS
+     ============================================================
+     Domain is set to https://alwaysbready.me/ — if you ever move
+     to a different domain, that URL needs updating in 4 spots:
+     canonical, og:url, the JSON-LD "url"/"logo" fields, and in
+     robots.txt / sitemap.xml.
+
+     STILL TO DO:
+       1) REPLACE "images/og-cover.jpg" with an actual photo (ideal
+          size 1200x630px) — a nice shot of the pandesal box. This
+          is the image Google/Facebook/WhatsApp show when your link
+          is shared or found in search.
+       2) If you ever change your delivery areas or phone number,
+          update them in the JSON-LD block near the bottom of <head>
+          too, not just in the page banner.
+     ============================================================ -->
+
+<title>Always Bready — Fresh Pandesal Delivery in Dubai | Discovery Gardens, The Gardens, Al Furjan</title>
+<meta name="description" content="Freshly baked pandesal in Dubai, made nightly and baked to order. Filled pandesal (corned beef, Shanghai, chicken longaniza), Cheese Bready, CocoBon and more. Order online for pickup or delivery to Discovery Gardens, The Gardens & Al Furjan.">
+<meta name="keywords" content="pandesal Dubai, pandesal near me, Filipino bakery Dubai, home bakery Discovery Gardens, filled pandesal, fresh bread delivery Dubai, Always Bready, panaderia Dubai">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Always Bready">
+<link rel="canonical" href="https://alwaysbready.me/">
+
+<!-- Open Graph (Facebook, Messenger, WhatsApp link previews) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Always Bready">
+<meta property="og:title" content="Always Bready — Fresh Pandesal Delivery in Dubai">
+<meta property="og:description" content="Small daily batches of pandesal and softbreads, baked fresh and ordered online. Pickup or delivery across Discovery Gardens, The Gardens & Al Furjan.">
+<meta property="og:image" content="https://alwaysbready.me/images/og-cover.jpg">
+<meta property="og:url" content="https://alwaysbready.me/">
+<meta property="og:locale" content="en_AE">
+
+<!-- Twitter/X card (harmless to include even if you don't use Twitter) -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Always Bready — Fresh Pandesal Delivery in Dubai">
+<meta name="twitter:description" content="Freshly baked pandesal, filled breads and more. Order online for pickup or delivery in Dubai.">
+<meta name="twitter:image" content="https://alwaysbready.me/images/og-cover.jpg">
+
+<!-- ============================================================
+     SEO — STRUCTURED DATA (JSON-LD)
+     ============================================================
+     This is what lets Google understand "Always Bready" as a real
+     bakery business (address, hours-ish info, socials, menu) —
+     it's what powers rich results and helps you show up for
+     branded searches like "always bready" and local searches like
+     "pandesal near me" / "pandesal Dubai".
+     Edit the values below (address, phone, socials, menu items) any
+     time your details change. This block is invisible to visitors —
+     it's read by search engines only.
+     ============================================================ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Bakery",
+  "name": "Always Bready",
+  "alternateName": "Always Bready Dubai",
+  "url": "https://alwaysbready.me/",
+  "logo": "https://alwaysbready.me/logo.jpeg",
+  "image": "https://alwaysbready.me/logo.jpeg",
+  "description": "Home bakery in Dubai specializing in freshly baked pandesal and Filipino filled breads, made in small daily batches and ordered online for pickup or delivery.",
+  "priceRange": "AED 3 - AED 35",
+  "servesCuisine": "Filipino",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Discovery Gardens",
+    "addressRegion": "Dubai",
+    "addressCountry": "AE"
+  },
+  "areaServed": [
+    { "@type": "Place", "name": "Discovery Gardens, Dubai" },
+    { "@type": "Place", "name": "The Gardens, Dubai" },
+    { "@type": "Place", "name": "Al Furjan, Dubai" }
+  ],
+  "telephone": "+971586321718",
+  "sameAs": [
+    "https://instagram.com/alwaysbready_ae",
+    "https://www.tiktok.com/@always.bready",
+    "https://facebook.com/AlwaysBready"
+  ],
+  "hasMenu": {
+    "@type": "Menu",
+    "name": "Always Bready Menu",
+    "hasMenuSection": [
+      {
+        "@type": "MenuSection",
+        "name": "Hot Pandesal",
+        "hasMenuItem": [
+          {
+            "@type": "MenuItem",
+            "name": "Pandesal (8 pcs)",
+            "description": "Home made with whole meal flour, freshly baked daily.",
+            "offers": { "@type": "Offer", "price": "10", "priceCurrency": "AED" }
+          }
+        ]
+      },
+      {
+        "@type": "MenuSection",
+        "name": "Savory Pandesal",
+        "hasMenuItem": [
+          {
+            "@type": "MenuItem",
+            "name": "Pandesal con Corned Beef",
+            "offers": { "@type": "Offer", "price": "3", "priceCurrency": "AED" }
+          },
+          {
+            "@type": "MenuItem",
+            "name": "Pandesal con Shanghai Filling",
+            "offers": { "@type": "Offer", "price": "3", "priceCurrency": "AED" }
+          },
+          {
+            "@type": "MenuItem",
+            "name": "Pandesal con Chicken Skinless Longaniza",
+            "offers": { "@type": "Offer", "price": "3", "priceCurrency": "AED" }
+          }
+        ]
+      },
+      {
+        "@type": "MenuSection",
+        "name": "Sweet Bread",
+        "hasMenuItem": [
+          {
+            "@type": "MenuItem",
+            "name": "Cheese Bready",
+            "offers": { "@type": "Offer", "price": "3", "priceCurrency": "AED" }
+          },
+          {
+            "@type": "MenuItem",
+            "name": "CocoBon",
+            "offers": { "@type": "Offer", "price": "8", "priceCurrency": "AED" }
+          },
+          {
+            "@type": "MenuItem",
+            "name": "Pandesal con Yema",
+            "offers": { "@type": "Offer", "price": "3", "priceCurrency": "AED" }
+          }
+        ]
+      }
+    ]
+  }
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&family=Playball&family=Lobster&display=swap" rel="stylesheet">
@@ -322,7 +466,7 @@ z-index:5;
 <header>
   <div class="nav wrap">
     <a class="brand" id="brandHome" href="#" aria-label="Always Bready — back to home">
-      <img class="brand-logo" src="logo.jpeg" alt="Always Bready logo">
+      <img class="brand-logo" src="logo.jpeg" alt="Always Bready — home bakery logo, Dubai">
       <div class="brand-text">
         <span class="brand-mark"><span class="brand-always">Always</span><span class="brand-bready">Bready</span></span>
         <span class="brand-sub">Baked.Fresh.Ready</span>
@@ -342,7 +486,7 @@ z-index:5;
   <div class="wrap">
     <div class="eyebrow">Here's to a Little Reminder of Home</div>
     <h1>Premium Panaderia<br><em>On Your Doorstep</em> Baked Fresh.</h1>
-    <p>Small daily batches of pandesal and softbreads — ordered here, ready when you need them.</p>
+    <p>Small daily batches of pandesal and softbreads — ordered here, ready when you need them. Fresh pandesal in Dubai, delivered to Discovery Gardens, The Gardens &amp; Al Furjan.</p>
     <div class="hero-cta">
       <a href="#menu" class="btn btn-primary">See today's menu</a>
       <a href="#about" class="btn btn-ghost">Our story</a>
@@ -380,7 +524,7 @@ z-index:5;
   <div class="wrap about-grid">
     <div>
       <h2>Simple Tastes<br>Warm neighbourhood.</h2>
-      <p>Always Bready mixes each night, proofs slow, and makes sure you get the softest, freshest bread. No preservatives, no shortcuts, all but freshest ingredients. Order ahead for pickup, or have it delivered across Discovery Gardens, The Gardens, And Al Furjan.</p>
+      <p>Always Bready mixes each night, proofs slow, and makes sure you get the softest, freshest pandesal in Dubai. No preservatives, no shortcuts, just the freshest ingredients. Order ahead for pickup, or have it delivered across Discovery Gardens, The Gardens, and Al Furjan.</p>
       <div class="about-socials">
         <a href="https://instagram.com/alwaysbready_ae" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/></svg>
@@ -396,7 +540,7 @@ z-index:5;
         </a>
       </div>
     </div>
-    <img src="logo.jpeg" alt="Always Bready logo" style="width:100%; max-width:300px; margin:0 auto; display:block;">
+    <img src="logo.jpeg" alt="Always Bready logo — fresh pandesal Dubai" style="width:100%; max-width:300px; margin:0 auto; display:block;">
   </div>
 </section>
 
@@ -800,7 +944,7 @@ z-index:5;
     if(p.image){
       const img = document.createElement('img');
       img.src = 'images/' + p.image;
-      img.alt = p.name;
+      img.alt = p.name + ' — Always Bready, Dubai';
       img.loading = 'lazy';
       img.style.width = '100%';
       img.style.height = '100%';

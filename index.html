@@ -23,7 +23,7 @@
      ============================================================ -->
 
 <title>Always Bready — Fresh Pandesal Delivery in Dubai | Discovery Gardens, The Gardens, Al Furjan</title>
-<meta name="description" content="Freshly baked pandesal in Dubai, made nightly and baked to order. Filled pandesal (corned beef, Shanghai, chicken longaniza), Cheese Bready, CocoBon and more. Order online for pickup or delivery to Discovery Gardens, The Gardens & Al Furjan.">
+<meta name="description" content="Freshly baked pandesal in Dubai, made nightly and baked to order. Filled pandesal (corned beef, creamy tuna, chicken longaniza), Cheese Bready, CocoBon and more. Order online for pickup or delivery to Discovery Gardens, The Gardens & Al Furjan.">
 <meta name="keywords" content="pandesal Dubai, pandesal near me, Filipino bakery Dubai, home bakery Discovery Gardens, filled pandesal, fresh bread delivery Dubai, Always Bready, panaderia Dubai, pandesal">
 <meta name="robots" content="index, follow">
 <meta name="author" content="Always Bready">
@@ -113,7 +113,7 @@
           },
           {
             "@type": "MenuItem",
-            "name": "Pandesal con Shanghai Filling",
+            "name": "Pandesal con Creamy Tuna",
             "offers": { "@type": "Offer", "price": "3", "priceCurrency": "AED" }
           },
           {
@@ -502,13 +502,13 @@ z-index:5;
   <div class="today-track">
     <span>◦ TODAY'S BAKE — Pandesal</span>
     <span>◦ Pandesal with Corned Beef</span>
-    <span>◦ Pandesal with Shanghai Filling in Sweet & Sour Sauce</span>
+    <span>◦ Pandesal with Creamy Tuna</span>
     <span>◦ Pandesal with Chicken Skinless Longaniza</span>
     <!-- <span>◦ Pandesal with Egg and Mayo</span> -->
      <!--<span>◦ Pandesal with Cheese</span> -->
     <span>◦ TODAY'S BAKE — Pandesal</span>
     <span>◦ Pandesal with Corned Beef</span>
-    <span>◦ Pandesal with Shanghai Filling in Sweet & Sour Sauce</span>
+    <span>◦ Pandesal with Creamy Tuna</span>
     <span>◦ Pandesal with Chicken Skinless Longaniza</span>
     <!-- <span>◦ Pandesal with Egg and Mayo</span> -->
      <!--<span>◦ Pandesal with Cheese</span> -->
@@ -895,7 +895,7 @@ z-index:5;
     {id:'b1', name:'Plain Pandesal', soldOut: false},
 	  //{id:'b2', name:'Pandesal con Cheeese', soldOut: false},
     {id:'b3', name:'Pandesal con Corned Beef', soldOut: false},
-    {id:'b4', name:'Pandesal con Shanghai Filling', soldOut: false},
+   // {id:'b4', name:'Pandesal con Shanghai Filling', soldOut: false},
     {id:'b5', name:'Pandesal con Chicken Skinless Longaniza', soldOut: false},
     {id:'b6', name:'Cheese Bready', soldOut: false},
     {id:'b7', name:'Pandesal con Yema', soldOut: false},
@@ -910,7 +910,7 @@ z-index:5;
     //{id:'p3', section:'grid-pandesal', name:'Malunggay Pandesal (3 PCS)', desc:'Premium Pandesal, only healthier', price:10, type:'bun'},
 
     {id:'p4', section:'grid-SavPandesal', name:'Pandesal con Corned Beef', desc:'Pandesal filled with your favorite corned beef', price:3, type:'bun',image: 'CB.jpg', soldOut: false },
-    {id:'p5', section:'grid-SavPandesal', name:'Pandesal con Shanghai Filling', desc:'Pandesal filled with Chicken Shanghai with Sweet and Sour Sauce ', price:3, type:'bun', image:'CS.png', soldOut: false },
+    //{id:'p5', section:'grid-SavPandesal', name:'Pandesal con Shanghai Filling', desc:'Pandesal filled with Chicken Shanghai with Sweet and Sour Sauce ', price:3, type:'bun', image:'CS.png', soldOut: false },
     {id:'p6', section:'grid-SavPandesal', name:'Pandesal con Chicken Skinless Longaniza', desc:'Pandesal filled with Sweet and Garlicky flavors for your cravings ', price:3, type:'bun', image: 'CL.png', soldOut: false},
     {id:'p7', section:'grid-SavPandesal', name:'Pandesal con Creamy Tuna', desc:'COMING SOON', price:3, type:'bun', image: 'TP.jpg', soldOut: false},
     //{id:'p8', section:'grid-SavPandesal', name:'Pandesal Filled Combo (4 PCS)', desc:'All Flavors in 1 Package [Corned Beef,Shanghai, Skinless Longaniza, Egg and Mayo]', price:30, type:'bun'},
@@ -999,14 +999,7 @@ z-index:5;
     const boxCard = document.createElement('div');
     boxCard.className = 'card';
     boxCard.innerHTML = `
-      <div class="card-icon">
-        <img
-          src="images/BIB.jpg"
-          alt="Build Your Own Box — Always Bready, Dubai"
-          loading="lazy"
-          style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius);"
-        >
-      </div>
+      <div class="card-icon">${icon('bun')}</div>
       <h3>Build Your Own Box</h3>
       <p class="desc">Pick your own mix of flavors — exactly ${BOX_MAX} pieces per box.</p>
       <div class="card-foot">

@@ -999,7 +999,14 @@ z-index:5;
     const boxCard = document.createElement('div');
     boxCard.className = 'card';
     boxCard.innerHTML = `
-      <div class="card-icon">${icon('bun')}</div>
+      <div class="card-icon">
+        <img
+          src="images/BIB.jpg"
+          alt="Build Your Own Box — Always Bready, Dubai"
+          loading="lazy"
+          style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius);"
+        >
+      </div>
       <h3>Build Your Own Box</h3>
       <p class="desc">Pick your own mix of flavors — exactly ${BOX_MAX} pieces per box.</p>
       <div class="card-foot">

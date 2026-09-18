@@ -517,7 +517,7 @@ z-index:5;
   </div>
 </div>
 
- <div class="min-order-banner"> After 2PM orders, for pickup or delivery next day | Delivery after 6PM     |    Minimum Order: AED <span id="minOrderBannerVal">35</span> </div>
+ <div class="min-order-banner"> Same-day delivery after 6PM | Pickup available throughout the day | Minimum Order: AED <span id="minOrderBannerVal">35</span> </div>
 
 <main class="wrap" id="menu">
   <!-- Menu sections are generated automatically from MENU_SECTIONS + PRODUCTS in the script below. -->
@@ -1132,24 +1132,14 @@ z-index:5;
   document.getElementById('minOrderBannerVal').textContent = MIN_ORDER;
 
   /* ============================================================
-     LATE-ORDER CUTOFF
+     DELIVERY TIMING NOTE
      ============================================================
-     ORDER_CUTOFF_HOUR -> the hour (24h, on the customer's own
-       device clock) after which an order can no longer be
-       fulfilled the same day. At or after this hour, the
-       "Preferred date" field will not let today be picked —
-       the earliest date becomes tomorrow.
-       Currently set to 14, i.e. 2PM.
-
-     This automatically:
-       - disables today in the "Preferred date" field once it's
-         past the cutoff hour
-       - shows a note about it in the banner under the ticker
-         (the same banner that shows the minimum order)
-     No other edits needed — it re-checks the clock every time
-     someone opens checkout or confirms an order.
+     We removed the 2PM next-day restriction. Orders are now
+     treated as same-day, and the delivery window is after 6PM.
+     This keeps the date picker usable while still showing the
+     current delivery timing in the banner.
      ============================================================ */
-  const ORDER_CUTOFF_HOUR = 14; // 2 PM, device/browser local time
+  const ORDER_CUTOFF_HOUR = 18; // 6 PM, used only for delivery messaging
 
   function getLocalDateISO(offsetDays){
     const d = new Date();
@@ -1160,30 +1150,29 @@ z-index:5;
     return `${y}-${m}-${day}`;
   }
 
-  // Recomputes the cutoff state fresh (not cached) and re-applies it to the
-  // date field + banner. Called on load, whenever checkout is opened, and
-  // again right before an order is confirmed — so a tab left open across
-  // the 2PM cutoff still enforces it correctly instead of using a stale value.
+  // Recompute the timing state fresh so the banner and validation reflect the
+  // current time without keeping stale values in memory.
   let pastCutoff = false;
   let earliestDateISO = getLocalDateISO(0);
   function refreshCutoffState(){
     pastCutoff = new Date().getHours() >= ORDER_CUTOFF_HOUR;
-    earliestDateISO = getLocalDateISO(pastCutoff ? 1 : 0);
+    earliestDateISO = getLocalDateISO(0);
 
-    // Preferred date field can't be set earlier than the earliest fulfillable day
+    // Keep the date field consistent with same-day ordering while keeping the
+    // delivery timing note visible in the banner.
     const dateInput = document.getElementById('custDate');
-    dateInput.min = earliestDateISO;
-    // If a previously-picked date is now too early (session crossed the cutoff), clear it
-    if(dateInput.value && dateInput.value < earliestDateISO){
-      dateInput.value = '';
+    if(dateInput){
+      dateInput.min = earliestDateISO;
+      if(dateInput.value && dateInput.value < earliestDateISO){
+        dateInput.value = '';
+      }
     }
 
-    // Update the same banner that shows the minimum order with a cutoff note
     const minOrderBannerEl = document.querySelector('.min-order-banner');
     if(minOrderBannerEl && !SOLD_OUT){
       const cutoffNote = pastCutoff
-        ? `After 2PM orders, for pickup/delivery next day | Delivery after 6PM`
-        : `After 2PM orders, for pickup/delivery next day | Delivery after 6PM`;
+        ? `Same-day delivery after 6PM | Pickup available throughout the day`
+        : `Same-day delivery after 6PM | Pickup available throughout the day`;
       minOrderBannerEl.innerHTML = `${cutoffNote}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Minimum Order: AED <span id="minOrderBannerVal">${MIN_ORDER}</span>`;
     }
   }
@@ -1359,9 +1348,7 @@ const sub = subtotal();
     }
     const dateValCheck = document.getElementById('custDate').value;
     if(dateValCheck && dateValCheck < earliestDateISO){
-      alert(pastCutoff
-        ? 'Orders placed after 2PM can only be scheduled from 6PM tomorrow onward. Please pick a later date.'
-        : 'Please pick today or a later date.');
+      alert('Same-day delivery is available after 6PM. Please pick today or a later date.');
       return;
     }
 

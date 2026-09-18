@@ -605,14 +605,9 @@ z-index:5;
         <input type="date" id="custDate">
       </div>
       <div class="field">
-        <label for="custTime">Preferred time (after 6 PM)</label>
+        <label for="custTime" id="custTimeLabel">Preferred time</label>
         <select id="custTime">
           <option value="">Select a time slot</option>
-          <option>6:00 PM – 7:00 PM</option>
-          <option>7:00 PM – 8:00 PM</option>
-          <option>8:00 PM – 9:00 PM</option>
-          <option>9:00 PM – 10:00 PM</option>
-          <option>After 10:00 PM</option>
         </select>
       </div>
       <div class="field">
@@ -1321,16 +1316,61 @@ const sub = subtotal();
   const optDelivery = document.getElementById('optDelivery');
   const areaField = document.getElementById('areaField');
   const addressField = document.getElementById('addressField');
+  const custTime = document.getElementById('custTime');
+  const custTimeLabel = document.getElementById('custTimeLabel');
+
+  function updateTimeOptions(mode){
+    const options = mode === 'pickup'
+      ? [
+          '7:00 AM – 8:00 AM',
+          '8:00 AM – 9:00 AM',
+          '9:00 AM – 10:00 AM',
+          '10:00 AM – 11:00 AM',
+          '11:00 AM – 12:00 PM',
+          '12:00 PM – 1:00 PM',
+          '1:00 PM – 2:00 PM',
+          '2:00 PM – 3:00 PM',
+          '3:00 PM – 4:00 PM',
+          '4:00 PM – 5:00 PM',
+          '5:00 PM – 6:00 PM',
+          '6:00 PM – 7:00 PM',
+          '7:00 PM – 8:00 PM',
+          '8:00 PM – 9:00 PM'
+        ]
+      : [
+          '6:00 PM – 7:00 PM',
+          '7:00 PM – 8:00 PM',
+          '8:00 PM – 9:00 PM',
+          '9:00 PM – 10:00 PM',
+          'After 10:00 PM'
+        ];
+
+    const selectedValue = custTime.value;
+    custTime.innerHTML = '<option value="">Select a time slot</option>' +
+      options.map(option => `<option value="${option}">${option}</option>`).join('');
+
+    if(mode === 'pickup'){
+      custTimeLabel.textContent = 'Preferred time (Pickup: 7:00 AM – 9:00 PM)';
+    } else {
+      custTimeLabel.textContent = 'Preferred time (after 6 PM)';
+    }
+
+    custTime.value = options.includes(selectedValue) ? selectedValue : '';
+  }
+
   optPickup.addEventListener('click', ()=>{
     fulfilMode='pickup';
     optPickup.classList.add('active'); optDelivery.classList.remove('active');
     areaField.classList.add('hidden'); addressField.classList.add('hidden');
+    updateTimeOptions('pickup');
   });
   optDelivery.addEventListener('click', ()=>{
     fulfilMode='delivery';
     optDelivery.classList.add('active'); optPickup.classList.remove('active');
     areaField.classList.remove('hidden'); addressField.classList.remove('hidden');
+    updateTimeOptions('delivery');
   });
+  updateTimeOptions('pickup');
 
   // Confirm order
   document.getElementById('confirmOrderBtn').addEventListener('click', async ()=>{

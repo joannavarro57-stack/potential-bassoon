@@ -375,6 +375,8 @@
   .cart-item-info h4{font-size:14px; font-weight:600; margin:0 0 4px;}
   .box-stock-note{font-family:'Space Mono', monospace; font-size:10.5px; color:var(--crust-mid); display:block; margin-top:2px;}
   .box-stock-note.low{color:var(--ember); font-weight:700;}
+  .box-category{margin:18px 0 4px;padding-bottom:7px;border-bottom:1px solid var(--line);font-family:'Fraunces',serif;font-size:17px;color:var(--crust);}
+  .box-category:first-child{margin-top:4px;}
   .qty-row{display:flex; align-items:center; gap:10px; margin-top:6px;}
   .qty-btn{width:24px; height:24px; border-radius:50%; border:1px solid var(--crust); background:none; cursor:pointer; font-size:14px;}
   .qty-val{font-family:'Space Mono'; font-size:13px; min-width:16px; text-align:center;}
@@ -889,14 +891,14 @@ z-index:5;
   const BOX_MIN = 12;
   const BOX_MAX = 12;
   const BOX_ITEMS = [
-    {id:'b1', name:'Plain Pandesal', soldOut: false},
+    {id:'b1', name:'Plain Pandesal', category:'Hot Pandesal', soldOut: false},
 	  //{id:'b2', name:'Pandesal con Cheeese', soldOut: false},
-    {id:'b3', name:'Pandesal con Corned Beef', soldOut: false},
+    {id:'b3', name:'Pandesal con Corned Beef', category:'Savory Pandesal', soldOut: false},
    // {id:'b4', name:'Pandesal con Shanghai Filling', soldOut: false},
-    {id:'b5', name:'Pandesal con Chicken Skinless Longaniza', soldOut: false},
-    {id:'b6', name:'Cheese Bready', soldOut: false},
-    {id:'b7', name:'Pandesal con Yema', soldOut: false},
-    {id:'b8', name:'Pandesal con Creamy Tuna', soldOut: false},
+    {id:'b5', name:'Pandesal con Chicken Skinless Longaniza', category:'Savory Pandesal', soldOut: false},
+    {id:'b6', name:'Cheese Bready', category:'Sweet Bread', soldOut: false},
+    {id:'b7', name:'Pandesal con Yema', category:'Sweet Bread', soldOut: false},
+    {id:'b8', name:'Pandesal con Creamy Tuna', category:'Savory Pandesal', soldOut: false},
     // {id:'b6', name:'Pandesal con Egg & Mayo'},
   
   ];
@@ -1513,7 +1515,12 @@ const sub = subtotal();
 
   function renderBoxItems(){
     const list = document.getElementById('boxItemsList');
-    list.innerHTML = BOX_ITEMS.map(it=>{
+    const categoryOrder = ['Hot Pandesal', 'Savory Pandesal', 'Sweet Bread'];
+    const categories = [
+      ...categoryOrder.filter(category => BOX_ITEMS.some(item => item.category === category)),
+      ...new Set(BOX_ITEMS.map(item => item.category || 'Other').filter(category => !categoryOrder.includes(category)))
+    ];
+    const renderItem = it => {
       const qty = boxSelections[it.id] || 0;
       const rawEst = estimateFor(it.name);
       const remaining = effectiveRemaining(it.name); // undefined if this flavor isn't tracked
@@ -1542,6 +1549,13 @@ const sub = subtotal();
           <button class="box-qty-plus" data-id="${it.id}" ${atCap ? 'disabled' : ''}>+</button>
         </div>
       </div>`;
+    };
+    list.innerHTML = categories.map(category=>{
+      const items = BOX_ITEMS.filter(item => (item.category || 'Other') === category);
+      return `<section class="box-category-group" aria-label="${category}">
+        <h4 class="box-category">${category}</h4>
+        ${items.map(renderItem).join('')}
+      </section>`;
     }).join('');
 
     const total = Object.values(boxSelections).reduce((s,q)=>s+q,0);
